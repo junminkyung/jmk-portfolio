@@ -22,6 +22,7 @@
       <a href="#publications">Publications</a>
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
+      <a href="en/index.html" style="margin-top:14px;border-top:1px solid #39413e;padding-top:16px;letter-spacing:.1em;font-size:11px">EN · English</a>
     </nav>
     <div class="side-note"><span>FOCUS</span><strong>Simulation × Perception</strong><p>실제 로봇의 문제를 재현하고 검증 가능한 소프트웨어로 바꿉니다.</p></div>
     <small class="copyright">© 2026 JEON MINKYUNG</small>
@@ -64,25 +65,14 @@
 
       <div class="group-label"><b>INDUSTRY</b><span>자율주행 주차 로봇 · 2026.01 – 현재</span></div>
       <div class="card-grid">
-        <a class="card" href="projects/dual-marker-pose.html">
-          <div class="thumb contain"><img src="assets/img/dual-marker/filter-stages.png" alt="필터 단계별 pitch 시계열 그래프" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
-          <div class="card-body">
-            <small>2026.01 — 2026.06 · 2인 · 기여도 65%</small>
-            <h3>듀얼 마커 기반 상대 자세 추정 안정화</h3>
-            <p class="desc">사실상 동작하지 않던 필터링 파이프라인의 구조적 결함을 찾아내고, Ceres 비선형 최적화와 쿼터니언 특성을 고려한 필터로 재설계했습니다.</p>
-            <p class="card-result">pitch 노이즈 59% 감소 · 2° 이상 튀는 프레임 완전 소거</p>
-            <div class="tags"><span>C++</span><span>Ceres Solver</span><span>OpenCV</span><span>Quaternion</span><span>Filtering</span></div>
-            <span class="card-more">상세 보기 <b>→</b></span>
-          </div>
-        </a>
-        <a class="card" href="projects/marker-optimization.html">
+        <a class="card" href="projects/dual-marker.html">
           <div class="thumb"><img src="assets/img/marker-opt/roi-tracking.png" alt="차량 하부 저조도 환경의 Dynamic ROI 추적" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
           <div class="card-body">
-            <small>2026.03 — 2026.05 · 검출·비용 동시 최적화</small>
-            <h3>마커 검출 성능·연산 최적화</h3>
-            <p class="desc">장축 차량에서의 원거리 미검출을 해결하면서, 그로 인해 늘어난 연산 비용을 Kalman Filter 기반 Dynamic ROI와 실행 조건 제어로 되돌렸습니다.</p>
-            <p class="card-result">주행 중 검출 약 17배 증가 · 처리 시간 50% 단축</p>
-            <div class="tags"><span>Computer Vision</span><span>Dynamic ROI</span><span>Kalman Filter</span><span>ROS 2</span></div>
+            <small>2026.01 — 2026.06 · 인수인계 후 전담 · 실제 운용 로봇 탑재</small>
+            <h3>듀얼 마커 기반 상대 자세 추정 시스템 개선</h3>
+            <p class="desc">동작하지 않던 필터링의 구조적 결함을 찾아 Ceres 비선형 최적화와 쿼터니언 필터링으로 재설계하고, 장축 차량 원거리 미검출을 해결하며 늘어난 연산 비용을 Kalman 기반 Dynamic ROI로 되돌렸습니다.</p>
+            <p class="card-result">pitch 노이즈 59% 감소 · 주행 중 검출 약 17배 · 처리 시간 50% 단축</p>
+            <div class="tags"><span>C++</span><span>Ceres Solver</span><span>OpenCV</span><span>Quaternion</span><span>Dynamic ROI</span><span>Kalman Filter</span></div>
             <span class="card-more">상세 보기 <b>→</b></span>
           </div>
         </a>
@@ -207,7 +197,7 @@
       <div class="pub-block">
         <h3>Awards & Research Grants</h3>
         <div class="awards">
-          <article><b>제2회 미래형자동차 자율주행 SW 경진대회 · 장려상</b><small>ROS 기반 자율주행·주차 시스템 설계 및 구현</small></article>
+          <article><b>제2회 미래형자동차 자율주행 SW 경진대회 · 장려상</b><small>2023.08 (학부 4학년) · ROS 기반 자율주행·주차 시스템 설계 및 구현</small></article>
           <article><b>차체 프레스 금형 폴리싱 자동화 시스템 개발</b><small>한국산업기술평가관리원 · 2023.05 – 2025.12</small></article>
           <article><b>온실 자율주행 시뮬레이션 환경 구축 및 ROS 연동</b><small>한국전자통신연구원(ETRI) · 2024.07 – 2024.08</small></article>
           <article><b>스마트 커뮤니티 폴리싱 시스템 개발</b><small>한국연구재단 · 2024.02 – 2024.09</small></article>
@@ -238,7 +228,7 @@
 </div>
 
 <script>
-const links=[...document.querySelectorAll('.side nav a')];
+const links=[...document.querySelectorAll('.side nav a')].filter(a=>a.getAttribute('href').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
 const onScroll=()=>{
   let idx=0;

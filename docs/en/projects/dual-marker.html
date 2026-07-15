@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dual-Marker Relative Pose Estimation — System Overhaul | Minkyung Jun</title>
+<meta name="description" content="Fixed silently-broken filtering in a dual-ArUco 6-DOF pose pipeline, rebuilt it with Ceres non-linear optimization and quaternion-aware filters, and recovered compute cost with a Kalman-based dynamic ROI. Running on production robots.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/dual-marker.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge industry">INDUSTRY · Owned module</span>
+    <h1>Dual-Marker Relative Pose Estimation<br>System Overhaul</h1>
+    <div class="meta">
+      <span><b>Period</b> 2026.01 — 2026.06</span>
+      <span><b>Role</b> Took over at onboarding → now sole owner</span>
+      <span><b>Keywords</b> C++ · Ceres Solver · Quaternion Filtering · Dynamic ROI</span>
+    </div>
+  </div>
+
+  <p class="note">This is a project at my current employer. For confidentiality, product, customer, and site details are
+  omitted; the write-up focuses on the problem-solving process and engineering decisions.
+  I took this module over right after joining, own it today, and <b>my code runs on robots in production.</b></p>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>In a system where two robots drive as one coordinated set, I overhauled the pipeline that estimates the partner robot's 6-DOF pose from dual ArUco markers seen by a rear camera.</li>
+      <li><b>Part 1 — Pose stabilization</b>: found the structural defects that silently disabled the filters, rebuilt the pipeline with Ceres non-linear optimization and quaternion-aware filtering → pitch noise −59%, 2°+ jumps eliminated.</li>
+      <li><b>Part 2 — Detection & compute optimization</b>: fixed long-wheelbase far-range detection failures, then recovered the added compute with a Kalman-based dynamic ROI → ~17× more detections while driving, processing time −50%.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PART 1</span>Pose stabilization — the filters that did nothing</h2>
+  <p>The code had an LPF and a median filter, yet the output jittered almost exactly like the raw signal. Tracing the
+  code revealed the <b>LPF was re-initialized every frame</b>, remembering no state — and its cutoff was set to 100 Hz,
+  driving the interpolation coefficient to 1 so values passed through unchanged. Pitch variance also grew with marker
+  distance (z), and error cases produced 48 frames jumping by more than 2°.</p>
+  <figure>
+    <img src="../../assets/img/dual-marker/filter-stages.png" alt="Per-stage pitch time series after fixing the initialization bug" loading="lazy">
+    <figcaption>Per-stage pitch time series after the init-bug fix — top to bottom: LPF, Median, Original. Before the fix all three were identical.</figcaption>
+  </figure>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">Rebuilding the filtering pipeline</h3>
+  <ul>
+    <li>Fixed the repeated LPF initialization; re-tuned cutoff 100 Hz → 5 Hz via quantitative frequency sweeps</li>
+    <li>Replaced Euler-angle filtering with a <b>SLERP-based LPF handling quaternion sign ambiguity</b></li>
+    <li>Swapped quaternion median from geodesic medoid to <b>Weiszfeld's algorithm</b></li>
+    <li>Added a <b>One Euro Filter</b> that adapts strength to the rate of change</li>
+    <li>Modeled pitch variance vs. distance (LUT) as the basis for distance-adaptive filtering</li>
+  </ul>
+  <figure>
+    <img src="../../assets/img/dual-marker/pitch-variance-lut.png" alt="Pitch variance LUT by distance z" loading="lazy">
+    <figcaption>Pitch-variance LUT by distance (z) — quantifying variance growth with range to ground the filter design.</figcaption>
+  </figure>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">Ceres-based pose estimation</h3>
+  <p>Instead of stock OpenCV solvePnP, I re-implemented pose estimation to <b>minimize reprojection error directly with
+  Ceres Solver</b> — Huber loss to bound outlier corners, optimization on the quaternion manifold to avoid rotation
+  singularities, and soft constraints on roll/yaw, which the mechanism physically limits.
+  Six version combinations were replayed on <b>the same rosbag data</b> and compared on pitch std/range, z std, and
+  gap/jump counts to pick the final configuration.</p>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/dual-marker/plot-before.png" alt="Pose time series before: repeated roll spikes" loading="lazy"><figcaption>Before — repeated ±180° roll-flip spikes and pitch noise.</figcaption></figure>
+    <figure><img src="../../assets/img/dual-marker/plot-after.png" alt="Pose time series after: spikes eliminated" loading="lazy"><figcaption>After — same segment, flip spikes gone, all axes stabilized.</figcaption></figure>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><b>59%↓</b><small>pitch std (normal driving)<br>0.610° → 0.248°</small></div>
+    <div class="metric"><b>42%↓</b><small>noise on error data<br>1.982° → 1.158°</small></div>
+    <div class="metric"><b>48 → 0</b><small>pitch jumps over 2°<br>fully eliminated</small></div>
+    <div class="metric"><b>54%↓</b><small>pitch range<br>3.16° → 1.46°</small></div>
+  </div>
+
+  <h2><span class="no">PART 2</span>Detection & compute — better detection costs more</h2>
+  <p>On long-wheelbase vehicles the marker-to-camera distance grows, so far-range detection failed — only 5.8% of frames
+  detected while driving. Turning on precise corner refinement (APRILTAG) recovered detection but multiplied processing
+  time ~5×, while two always-on detector nodes loaded the onboard CPU. The task: <b>satisfy detection performance and
+  real-time budget at once</b>.</p>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">Detection — quantitative sweep of preprocessing × refinement</h3>
+  <ul>
+    <li>Sharpening preprocessing on the ROI improved both missed and false detections at range</li>
+    <li>Compared <b>12 combinations</b> of cornerRefinement (NONE · SUBPIX · APRILTAG) × preprocessing on identical data</li>
+    <li>Diagnosed an OpenCV APRILTAG infinite-loop issue found during the sweep; resolved via library upgrade</li>
+  </ul>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">Compute — dynamic ROI and execution gating</h3>
+  <p>Rather than scanning full frames, a Kalman filter tracks the marker center and a dynamic ROI detects only where the
+  marker should be. A 4-state design — INIT · TRACKING · SEARCHING · RECOVERY — gradually widens the search on tracking
+  loss and falls back to full-frame search after sustained failure. Detector nodes are now activated only when the
+  driving-mode flag requires them.</p>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/marker-opt/roi-tracking.png" alt="Dynamic ROI tracking dual markers in low light" loading="lazy"><figcaption>Dynamic ROI in TRACKING — dual-marker detection with pose axes, under a vehicle in low light.</figcaption></figure>
+    <figure><img src="../../assets/img/marker-opt/roi-state-machine.png" alt="State transition diagram: INIT, TRACKING, SEARCHING, RECOVERY" loading="lazy"><figcaption>Dynamic-ROI state machine — four states with fallback paths.</figcaption></figure>
+  </div>
+  <p>To mimic production conditions, latency was analyzed under stress-ng CPU load — not just the mean but
+  <b>P95/P99 tail latency</b>, since intermittent spikes are what break real-time control.</p>
+  <div class="metric-row">
+    <div class="metric"><b>17×</b><small>detections while driving<br>31 → 534</small></div>
+    <div class="metric"><b>50%↓</b><small>mean processing time<br>(with refinement enabled)</small></div>
+    <div class="metric"><b>76×↓</b><small>z std from<br>false detections</small></div>
+    <div class="metric"><b>97%↓</b><small>pitch range<br>(false-detection segments)</small></div>
+  </div>
+
+  <div class="result-band">
+    <b>OWNERSHIP</b>
+    <ul>
+      <li>Took over the code at onboarding and drove everything from defect analysis to redesign and field validation — now the module's sole owner</li>
+      <li>The improved code shipped through release and runs on robots operating in production today</li>
+    </ul>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="mold-polishing.html"><small>← PREV</small><b>Mold-Polishing Automation — Digital Twin & Mobile Manipulator</b></a>
+    <a class="next" href="isaacsim-validation.html"><small>NEXT →</small><b>Isaac Sim Algorithm-Validation Environment</b></a>
+  </nav>
+</article>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mold-Polishing Automation — Digital Twin & Mobile Manipulator | Minkyung Jun</title>
+<meta name="description" content="Recreated a press-die factory as a digital twin and automated surface-roughness inspection with a mobile manipulator. National R&D project, year-2 lead.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/mold-polishing.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · National R&D project (KEIT)</span>
+    <h1>Press-Die Polishing Automation<br>Digital Twin & Mobile Manipulator</h1>
+    <div class="meta">
+      <span><b>Period</b> 2023.05 — 2025.12</span>
+      <span><b>Team</b> 4 (50% · year-2 lead)</span>
+      <span><b>Outcome</b> 3 related conference papers</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtu.be/hKIdTsm_5Jg" target="_blank" rel="noopener">🎬 Simulation</a>
+      <a class="ghost" href="https://youtube.com/shorts/Aun_ZGvvsxA" target="_blank" rel="noopener">🎬 Test bed</a>
+      <a class="ghost" href="https://youtu.be/zJNtqp4xWBU" target="_blank" rel="noopener">🎬 Industrial site</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>3D-scanned an automotive press-die factory and recreated it as an <b>Isaac Sim digital twin</b> to validate demo algorithms before going on site.</li>
+      <li>Developed AprilTag-based mobile-platform localization and manipulator control, achieving <b>1 cm average repeatability error</b>.</li>
+      <li>A PyQt GUI made data collection ~50% faster, and a new surface-roughness (Ra) metric that removes valley outliers improved <b>roughness estimation accuracy by ~10%</b>.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">STEP 1</span>Digital twin of the factory</h2>
+  <p>Site access was limited in this multi-organization project, so we scanned the factory and built a faithful digital
+  twin in Isaac Sim. Core demo algorithms — driving paths, approach poses, inspection sequences — were validated in the
+  twin before every site visit.</p>
+  <figure>
+    <img src="../../assets/img/polishing/digital-twin.jpg" alt="Press-die factory recreated in Isaac Sim with a mobile manipulator" loading="lazy">
+    <figcaption>The factory digital twin in Isaac Sim — two press dies and the mobile manipulator (bottom left).</figcaption>
+  </figure>
+
+  <h2><span class="no">STEP 2</span>Localization, control, and roughness estimation</h2>
+  <ul>
+    <li><b>Localization</b> — designed and implemented AprilTag-based localization for the mobile platform</li>
+    <li><b>Manipulator control</b> — Python-SDK-based control achieving 1 cm average (2 cm max) repeatability error</li>
+    <li><b>Data collection</b> — a PyQt GUI unifying specimen capture and roughness measurement, ~50% faster</li>
+    <li><b>Roughness metric</b> — proposed a new Ra computation that removes valley outliers, improving estimation accuracy by ~10%</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/polishing/factory-site.jpg" alt="Mobile manipulator inspecting a die at the real factory" loading="lazy"><figcaption>The real site — the mobile manipulator inspecting a die surface from AprilTag markers.</figcaption></figure>
+    <figure><img src="../../assets/img/polishing/gui.png" alt="PyQt GUI integrating capture, Ra estimation, and arm control" loading="lazy"><figcaption>Data-collection GUI — capture, Ra estimation, and arm motion in one screen.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">ROLE</span>Year-2 project lead</h2>
+  <p>From the second year I served as the liaison across collaborating organizations and coordinated integration tests
+  with field engineers. Demos were staged in three steps — simulation → test bed → real site — completing the integrated
+  demonstration within the limited site-access windows.</p>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>Manipulator repeatability: 1 cm average error (2 cm max)</li>
+      <li>Data collection ~50% faster · roughness estimation accuracy ~10% higher</li>
+      <li>Three conference papers on surface-roughness estimation (KSME 2024)</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>Videos</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/hKIdTsm_5Jg" title="Digital twin simulation demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Digital twin simulation</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/zJNtqp4xWBU" title="Industrial site demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Industrial site demonstration</p>
+    </div>
+    <div>
+      <div class="video-wrap vertical"><iframe src="https://www.youtube.com/embed/Aun_ZGvvsxA" title="Test bed demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Test-bed validation</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="isaacsim-ros.html"><small>← PREV</small><b>Isaac Sim Simulation Environment & ROS Interface</b></a>
+    <a class="next" href="dual-marker.html"><small>NEXT →</small><b>Dual-Marker Relative Pose Estimation — System Overhaul</b></a>
+  </nav>
+</article>
+</body>
+</html>

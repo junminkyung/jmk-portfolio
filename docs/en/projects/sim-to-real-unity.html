@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sim-to-Real Driving with Unity ML-Agents | Minkyung Jun</title>
+<meta name="description" content="An RL driving policy trained in Unity ML-Agents, exported to ONNX, and deployed on a physical Clearpath Husky A200.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/sim-to-real-unity.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH</span>
+    <h1>Sim-to-Real Mobile-Robot Driving<br>with Unity ML-Agents</h1>
+    <div class="meta">
+      <span><b>Period</b> 2023.09 — 2024.04</span>
+      <span><b>Team</b> 6 (80% contribution)</span>
+      <span><b>Platform</b> Clearpath Husky A200 · VLP-16</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtube.com/shorts/4yMeqzcyT-4" target="_blank" rel="noopener">🎬 Real-robot driving</a>
+      <a class="ghost" href="https://youtu.be/7N3GAzfNiMA" target="_blank" rel="noopener">🎬 Curriculum learning</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>Built three Unity training environments (maze, static obstacles, real building corridor) with a LiDAR simulation matched to the actual VLP-16 spec.</li>
+      <li><b>Exported the trained policy to ONNX and deployed it on a physical robot</b> via ROS; closed the sim-to-real gap with LiDAR noise injection and curriculum learning.</li>
+      <li>Achieved <b>stable driving over a ~50 m straight corridor</b> — about 6.7× the distance of the first attempt.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">STEP 1</span>Building the training environments</h2>
+  <p>The Unity LiDAR was implemented to match the real Velodyne VLP-16 (channels, FOV, range) and its distances fed
+  the RL state. Environments were built in order of difficulty: a maze, a static-obstacle course, and a replica of the
+  lab building's corridor.</p>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/sim2real/maze-env.jpg" alt="T-shaped maze training environment" loading="lazy"><figcaption>Maze environment — robot (left) and goal (bottom right).</figcaption></figure>
+    <figure><img src="../../assets/img/sim2real/unity-ros.jpg" alt="LiDAR point cloud visualized in Unity scene and game views" loading="lazy"><figcaption>Simulated LiDAR point cloud (left: Scene view, right: Game view) with ROS connection info.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">STEP 2</span>Reward design and training analysis</h2>
+  <p>Reward and termination were designed around LiDAR usage, distance, time, and collisions — and each change was
+  analyzed through its training curves. Notably, a per-step penalty (−0.01) alone made the agent <b>crash on purpose</b>
+  to end episodes early; switching to a 60-second episode time limit converged successfully while cutting training time
+  by about 50%.</p>
+  <figure>
+    <img src="../../assets/img/sim2real/reward-curves.png" alt="Cumulative reward curves comparing two reward designs" loading="lazy">
+    <figcaption>Training behavior by reward design — top: per-step penalty (intentional crashing, no convergence), bottom: time-limit design (converged).</figcaption>
+  </figure>
+
+  <h2><span class="no">STEP 3</span>Sim-to-Real transfer</h2>
+  <p>The policy was exported to ONNX and wrapped in a ROS node (Ubuntu 18.04, Melodic) controlling the physical Husky A200.
+  Early runs destabilized quickly due to differences between simulated and real LiDAR;
+  injecting Gaussian noise into the simulated LiDAR and applying curriculum learning
+  (straight → intersection → real corridor) fixed it.</p>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/sim2real/node-graph.png" alt="ROS node graph centered on the ONNX inference node" loading="lazy"><figcaption>ROS control graph — /scan and /goal feed the ONNX inference node, which outputs velocity commands.</figcaption></figure>
+    <figure><img src="../../assets/img/sim2real/curriculum.png" alt="Curriculum environments from straight to intersection to corridor with driving logs" loading="lazy"><figcaption>Curriculum learning environments (straight → intersection → lab corridor) and driving logs.</figcaption></figure>
+  </div>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>Stable driving over a ~50 m straight corridor — about 6.7× the distance of the first attempt</li>
+      <li>Quantified the sim-to-real gains from noise injection + curriculum learning</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>Videos</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap vertical"><iframe src="https://www.youtube.com/embed/4yMeqzcyT-4" title="Physical Husky corridor driving" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Physical Husky A200 corridor driving</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/7N3GAzfNiMA" title="Curriculum learning process" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Curriculum learning process</p>
+    </div>
+  </div>
+  <figure style="max-width:420px;margin:18px auto 0">
+    <img src="../../assets/img/sim2real/husky-hallway.jpg" alt="Husky A200 driving autonomously along a corridor" loading="lazy">
+    <figcaption>Husky A200 driving the corridor on the learned policy.</figcaption>
+  </figure>
+
+  <nav class="detail-nav">
+    <a href="soar-rl.html"><small>← PREV</small><b>SOAR-RL: RL Navigation in Narrow Spaces</b></a>
+    <a class="next" href="isaacsim-ros.html"><small>NEXT →</small><b>Isaac Sim Simulation Environment & ROS Interface</b></a>
+  </nav>
+</article>
+</body>
+</html>

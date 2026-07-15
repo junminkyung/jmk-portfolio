@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Sim Simulation Environment & ROS Interface | Minkyung Jun</title>
+<meta name="description" content="Rebuilt a 3D-scanned lab environment in Isaac Sim with ROS interfaces for six LiDAR models, an IMU, and robot control. ETRI research project, led by Minkyung Jun.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/isaacsim-ros.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · ETRI project</span>
+    <h1>Isaac Sim Autonomous-Driving Simulation<br>Environment & ROS Interface</h1>
+    <div class="meta">
+      <span><b>Period</b> 2024.07 — 2025.02</span>
+      <span><b>Team</b> 6 (40% · project lead)</span>
+      <span><b>Client</b> ETRI (Electronics and Telecommunications Research Institute)</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtu.be/pPnIYTBm6Dc" target="_blank" rel="noopener">🎬 Demo video</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>Rebuilt a 3D-scanned lab environment in Isaac Sim and implemented <b>ROS interfaces for six LiDAR models and an IMU</b>, plus ROS control test nodes for a Ranger Mini robot.</li>
+      <li>As project lead, <b>coordinated the schedule and integrated the modules</b> of a six-person team into the final deliverable.</li>
+      <li>This project seeded my later work: the industrial digital twin (mold polishing) and the validation environment I now build at work.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>Why simulation</h2>
+  <p>Outdoor environments like greenhouses change with seasons and weather, making repeated validation of autonomy
+  algorithms difficult. You need a simulation that faithfully replicates the real environment — and an interface that
+  lets the existing ROS stack plug in unchanged — to iterate without site visits.</p>
+
+  <h2><span class="no">METHOD</span>Environment, sensors, robot</h2>
+  <ul>
+    <li><b>Environment</b> — cleaned up 3D-scanned lab spaces and rebuilt them as Isaac Sim environments</li>
+    <li><b>Sensors</b> — implemented six LiDAR models with different scan patterns/channels plus an IMU, publishing ROS topics (LaserScan · PointCloud2)</li>
+    <li><b>Robot</b> — Ranger Mini model with ROS control test nodes, plus robots for four drive types (Differential · Ackermann · Custom · Double Ackermann)</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/isaacsim-ros/isaac-rviz.jpg" alt="Isaac Sim driving view beside RViz sensor visualization" loading="lazy"><figcaption>Robot driving in Isaac Sim (left) and RViz sensor data (right) — validating LaserScan and PointCloud output together.</figcaption></figure>
+    <figure><img src="../../assets/img/isaacsim-ros/robots.jpg" alt="Four robot models with different drive types" loading="lazy"><figcaption>Robot models — Farmbot (Differential) · Hunter (Ackermann) · Ranger Mini (Custom) · Titan (Double Ackermann).</figcaption></figure>
+  </div>
+
+  <h2><span class="no">ROLE</span>Project lead</h2>
+  <p>I integrated the work of six people split across environment, sensor, and robot tracks.
+  We agreed on interfaces first (topic names, frames, update rates) and managed weekly integration checkpoints,
+  so the final integration had no surprises and the deliverable shipped on schedule.</p>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>Delivered an Isaac Sim autonomy environment with six LiDAR models, IMU, and robot control connected over ROS</li>
+      <li>Completed the ETRI project "High-fidelity 3D greenhouse simulation environment & ROS interface"</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>Video</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/pPnIYTBm6Dc" title="Isaac Sim simulation environment demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Integrated environment · sensors · robot demo</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="sim-to-real-unity.html"><small>← PREV</small><b>Sim-to-Real Driving with Unity ML-Agents</b></a>
+    <a class="next" href="mold-polishing.html"><small>NEXT →</small><b>Mold-Polishing Automation — Digital Twin & Mobile Manipulator</b></a>
+  </nav>
+</article>
+</body>
+</html>

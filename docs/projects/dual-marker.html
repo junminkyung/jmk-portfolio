@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>듀얼 마커 기반 상대 자세 추정 시스템 개선 | 전민경</title>
+<meta name="description" content="듀얼 ArUco 마커 기반 6-DOF 자세 추정의 필터링 결함 수정, Ceres 비선형 최적화 재구현, Kalman 기반 Dynamic ROI 연산 최적화까지 — 실제 운용 로봇에 탑재된 인지 파이프라인 개선 프로젝트.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../en/projects/dual-marker.html"><b>EN</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge industry">INDUSTRY · 전담 파트</span>
+    <h1>듀얼 마커 기반<br>상대 자세 추정 시스템 개선</h1>
+    <div class="meta">
+      <span><b>기간</b> 2026.01 — 2026.06</span>
+      <span><b>역할</b> 입사 직후 인수인계 → 현재 전담 개발</span>
+      <span><b>키워드</b> C++ · Ceres Solver · Quaternion Filtering · Dynamic ROI</span>
+    </div>
+  </div>
+
+  <p class="note">재직 중인 회사의 프로젝트입니다. 보안을 위해 제품·고객·운용 환경 정보는 제외하고, 문제 해결 과정과 기술적 판단 중심으로 정리했습니다.
+  입사 직후 인수인계받아 현재는 제가 전담하는 파트이며, <b>개선한 코드가 실제 운용 중인 로봇에 탑재되어 있습니다.</b></p>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>두 대의 로봇이 한 세트로 협조 주행하는 시스템에서, 후방 카메라와 듀얼 ArUco 마커로 상대 로봇의 6-DOF 자세를 추정하는 파이프라인 전체를 개선했습니다.</li>
+      <li><b>Part 1 — 자세 추정 안정화</b>: 사실상 동작하지 않던 필터의 구조적 결함을 찾아 Ceres 비선형 최적화와 쿼터니언 필터링으로 재설계 → pitch 노이즈 59% 감소, 2° 이상 튀는 프레임 완전 소거</li>
+      <li><b>Part 2 — 검출·연산 최적화</b>: 장축 차량 원거리 미검출을 해결하며 늘어난 연산 비용을 Kalman 기반 Dynamic ROI로 되돌림 → 주행 중 검출 약 17배, 처리 시간 50% 단축</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PART 1</span>자세 추정 안정화 — 필터가 있는데 왜 떨리는가</h2>
+  <p>기존 코드에는 LPF(저역통과필터)와 Median Filter가 있었지만 출력은 원본과 거의 동일하게 떨렸습니다.
+  코드를 추적해 보니 <b>LPF가 매 프레임 재초기화</b>되어 이전 상태를 전혀 기억하지 못했고,
+  cutoff 주파수가 100Hz로 설정되어 보간 계수가 1에 수렴 — 필터를 통과해도 값이 그대로였습니다.
+  또한 마커와의 거리(z)가 멀어질수록 pitch 분산이 커지고, 에러 상황에서는 2° 이상 튀는 프레임이 48건 발생했습니다.</p>
+  <figure>
+    <img src="../assets/img/dual-marker/filter-stages.png" alt="초기화 버그 수정 후 필터 단계별 pitch 시계열" loading="lazy">
+    <figcaption>초기화 버그 수정 후 필터 단계별 pitch 시계열 — 위에서부터 LPF, Median, Original. 수정 전에는 세 값이 완전히 동일했다.</figcaption>
+  </figure>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">필터링 파이프라인 재설계</h3>
+  <ul>
+    <li>LPF 반복 초기화 버그 수정, cutoff 주파수 100Hz → 5Hz 재설정 (주파수별 정량 비교로 결정)</li>
+    <li>오일러 각 대신 <b>Quaternion 부호 모호성을 처리한 SLERP 기반 LPF</b> 적용</li>
+    <li>Quaternion median 산출을 Geodesic Medoid에서 <b>Weiszfeld's algorithm</b>으로 교체</li>
+    <li><b>One Euro Filter</b>로 변화율에 따라 강도가 적응하는 필터링 추가</li>
+    <li>거리(z)별 pitch 분산을 모델링(LUT)해 거리 적응형 필터 설계의 근거로 사용</li>
+  </ul>
+  <figure>
+    <img src="../assets/img/dual-marker/pitch-variance-lut.png" alt="거리 z에 따른 pitch 분산 LUT" loading="lazy">
+    <figcaption>거리(z)별 pitch 분산 LUT — z 증가에 따른 분산 증가를 정량화해 필터 설계 근거로 사용.</figcaption>
+  </figure>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">Ceres 기반 Pose 추정 재구현</h3>
+  <p>OpenCV solvePnP를 그대로 쓰는 대신, <b>Ceres Solver로 재투영 오차를 직접 최소화</b>하는 구조로 재구현했습니다.
+  Huber loss로 outlier 코너의 영향을 줄이고, Quaternion Manifold 위에서 최적화해 회전 파라미터의 특이점을 피했으며,
+  시스템 기구 특성상 제한되는 roll/yaw에는 soft constraint를 걸었습니다.
+  개선안을 하나씩 켜고 끈 <b>6개 버전 조합을 동일한 rosbag 데이터로 재생</b>하며 pitch 표준편차·변동 범위, z 표준편차, gap·jump 건수로 정량 비교해 최종 조합을 선정했습니다.</p>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/dual-marker/plot-before.png" alt="개선 전 자세 추정 시계열 - roll 축에 스파이크 다수" loading="lazy"><figcaption>개선 전 — roll 축 ±180° 플립 스파이크와 pitch 노이즈가 반복 발생.</figcaption></figure>
+    <figure><img src="../assets/img/dual-marker/plot-after.png" alt="개선 후 자세 추정 시계열 - 스파이크 소거" loading="lazy"><figcaption>개선 후 — 동일 구간에서 플립 스파이크가 사라지고 각 축이 안정화.</figcaption></figure>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><b>59%↓</b><small>정상 주행 pitch 표준편차<br>0.610° → 0.248°</small></div>
+    <div class="metric"><b>42%↓</b><small>에러 데이터 노이즈<br>1.982° → 1.158°</small></div>
+    <div class="metric"><b>48 → 0건</b><small>2° 이상 pitch jump<br>완전 소거</small></div>
+    <div class="metric"><b>54%↓</b><small>pitch 변동 범위<br>3.16° → 1.46°</small></div>
+  </div>
+
+  <h2><span class="no">PART 2</span>검출·연산 최적화 — 검출을 올리면 비용이 오른다</h2>
+  <p>휠베이스가 긴 차종에서는 마커와 카메라 사이 거리가 멀어져 원거리에서 검출이 실패했고, 주행 중 검출률이 5.8% 수준이었습니다.
+  정밀한 코너 정제(APRILTAG refinement)를 켜면 검출은 살아나지만 처리 시간이 약 5배로 늘었고,
+  검출 노드 2개가 상시 실행되면서 온보드 컴퓨터의 CPU 부하가 가중되었습니다.
+  <b>검출 성능과 실시간성을 동시에 만족</b>시키는 것이 과제였습니다.</p>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">검출 성능 — 전처리·정제 조합의 정량 비교</h3>
+  <ul>
+    <li>ROI 영역 Sharpening 전처리로 원거리 마커의 과검출·미검출 개선</li>
+    <li>cornerRefinement(NONE·SUBPIX·APRILTAG) × 전처리 조합 <b>12개 케이스를 동일 데이터로 정량 비교</b>해 최적 조합 선정</li>
+    <li>비교 과정에서 발견한 OpenCV APRILTAG 모드의 무한루프 이슈를 분석하고 라이브러리 버전 업그레이드로 해결</li>
+  </ul>
+
+  <h3 style="margin:36px 0 12px;font-size:17px">연산 비용 — Dynamic ROI와 실행 조건 제어</h3>
+  <p>전체 이미지가 아니라 <b>마커가 있을 위치</b>만 검출하도록, Kalman Filter로 마커 중심을 추적하는 Dynamic ROI를 설계했습니다.
+  INIT · TRACKING · SEARCHING · RECOVERY의 4-state 구조로, 추적을 놓치면 탐색 범위를 점진 확장하고
+  일정 시간 실패 시 전체 탐색으로 복귀하는 fallback 경로를 두었습니다.
+  또한 주행 모드 flag에 따라 검출 노드를 필요할 때만 활성화해 상시 실행 부하를 제거했습니다.</p>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/marker-opt/roi-tracking.png" alt="저조도 환경에서 Dynamic ROI가 듀얼 마커를 추적하는 화면" loading="lazy"><figcaption>TRACKING 상태의 Dynamic ROI — 차량 하부 저조도 환경에서 듀얼 마커 검출 및 pose 축 표시.</figcaption></figure>
+    <figure><img src="../assets/img/marker-opt/roi-state-machine.png" alt="INIT, TRACKING, SEARCHING, RECOVERY 4-state 상태 전이도" loading="lazy"><figcaption>Dynamic ROI 상태 전이 구조 — 4-state와 fallback 경로.</figcaption></figure>
+  </div>
+  <p>실제 운용 조건을 모사하기 위해 stress-ng로 CPU 부하를 건 상태를 포함해,
+  처리 시간의 Mean뿐 아니라 <b>P95·P99 tail latency</b>까지 분석했습니다.
+  평균만 보면 놓치는 간헐적 지연 스파이크가 실시간 제어에는 치명적이기 때문입니다.</p>
+  <div class="metric-row">
+    <div class="metric"><b>17배</b><small>주행 중 검출 건수<br>31건 → 534건</small></div>
+    <div class="metric"><b>50%↓</b><small>평균 처리 시간<br>(refinement 강화 상태 기준)</small></div>
+    <div class="metric"><b>76배↓</b><small>과검출로 인한<br>z 표준편차</small></div>
+    <div class="metric"><b>97%↓</b><small>pitch 변동 범위<br>(과검출 구간)</small></div>
+  </div>
+
+  <div class="result-band">
+    <b>OWNERSHIP</b>
+    <ul>
+      <li>입사 직후 코드를 인수인계받아 결함 분석부터 재설계·현장 검증까지 주도 — 현재 이 파트의 전담 개발자</li>
+      <li>개선 코드는 릴리즈를 거쳐 실제 운용 중인 로봇에 탑재되어 동작하고 있습니다</li>
+    </ul>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="mold-polishing.html"><small>← PREV</small><b>금형 폴리싱 자동화 — 디지털 트윈 & 모바일 매니퓰레이터</b></a>
+    <a class="next" href="isaacsim-validation.html"><small>NEXT →</small><b>Isaac Sim 기반 알고리즘 검증 환경</b></a>
+  </nav>
+</article>
+</body>
+</html>

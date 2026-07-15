@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minkyung Jun | Robotics Software Engineer</title>
+<meta name="description" content="Portfolio of Minkyung Jun — robotics software engineer working on simulation-based validation and robot perception. Isaac Sim digital twins, Sim-to-Real reinforcement learning, sensor fusion.">
+<meta property="og:title" content="Minkyung Jun | Robotics Software Engineer">
+<meta property="og:description" content="Isaac Sim digital twins · Sim-to-Real RL · sensor-fusion perception. I reproduce real-robot failures and fix them with numbers.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div class="portfolio-shell">
+  <aside class="side">
+    <a class="identity" href="#home"><span>MK</span><div><b>Minkyung Jun</b><small>ROBOTICS SW ENGINEER</small></div></a>
+    <nav>
+      <a href="#home" class="active">Overview</a>
+      <a href="#projects">Projects</a>
+      <a href="#approach">Approach</a>
+      <a href="#publications">Publications</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="../index.html" style="margin-top:14px;border-top:1px solid #39413e;padding-top:16px;letter-spacing:.1em;font-size:11px">KO · 한국어</a>
+    </nav>
+    <div class="side-note"><span>FOCUS</span><strong>Simulation × Perception</strong><p>I reproduce real-robot problems and turn them into verifiable software.</p></div>
+    <small class="copyright">© 2026 JEON MINKYUNG</small>
+  </aside>
+
+  <main>
+    <header class="top"><span>PORTFOLIO · UPDATED 2026.07</span><div><i></i>Robotics SW Engineer · Seoul</div></header>
+
+    <section class="hero" id="home">
+      <div>
+        <span class="eyebrow">ROBOTICS · SIMULATION · PERCEPTION</span>
+        <h1>I validate robots so they<br><em>work reliably</em><br>in the real world.</h1>
+        <p>From Isaac Sim digital twins to ROS 2 sensor pipelines and camera·LiDAR perception algorithms.
+        In my master's, I transferred reinforcement-learning policies to physical robots and published a first-author
+        SCIE journal paper (Sensors, 2025). Today I build perception algorithms and simulation-based validation
+        environments at an autonomous parking-robot company. My method: reproduce the failure, then improve it with numbers.</p>
+        <div class="actions"><a href="#projects">View projects <b>↘</b></a><a href="#publications">Publications →</a></div>
+      </div>
+      <div class="focus-card">
+        <span>ENGINEERING FOCUS</span>
+        <h2>Sim-to-Real<br>Validation Loop</h2>
+        <ol>
+          <li><b>01</b><div>MODEL<small>Model the robot, sensors, and environment in simulation</small></div></li>
+          <li><b>02</b><div>CONNECT<small>Wire up ROS 2 and the perception pipeline</small></div></li>
+          <li><b>03</b><div>VALIDATE<small>Reproduce failures · compare quantitatively · improve</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-head">
+        <span>01 / PROJECTS</span>
+        <div>
+          <h2>Projects with clear<br>problems and results</h2>
+          <p>Industry work and master's research, side by side. Industry projects are described anonymously —
+          no company or product details — focusing on the problem-solving process and engineering decisions.
+          Click any card for a detail page with figures and videos.</p>
+        </div>
+      </div>
+
+      <div class="group-label"><b>INDUSTRY</b><span>Autonomous parking robots · 2026.01 – present</span></div>
+      <div class="card-grid">
+        <a class="card" href="projects/dual-marker.html">
+          <div class="thumb"><img src="../assets/img/marker-opt/roi-tracking.png" alt="Dynamic ROI tracking dual markers under a vehicle in low light" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
+          <div class="card-body">
+            <small>2026.01 — 2026.06 · Sole owner after handover · Running on production robots</small>
+            <h3>Dual-Marker Relative Pose Estimation — System Overhaul</h3>
+            <p class="desc">Found the structural defects that silently disabled the filtering pipeline, redesigned it with Ceres non-linear optimization and quaternion-aware filters, then recovered the added compute cost with a Kalman-based dynamic ROI.</p>
+            <p class="card-result">Pitch noise −59% · ~17× more detections while driving · processing time −50%</p>
+            <div class="tags"><span>C++</span><span>Ceres Solver</span><span>OpenCV</span><span>Quaternion</span><span>Dynamic ROI</span><span>Kalman Filter</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/isaacsim-validation.html">
+          <div class="thumb"><img src="../assets/img/isaac-validation/sim-lifting.jpg" alt="Parking robot entering under a vehicle in Isaac Sim" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
+          <div class="card-body">
+            <small>2026.03 — present · Solo project</small>
+            <h3>Isaac Sim Algorithm-Validation Environment</h3>
+            <p class="desc">Rebuilding the real robot, sensors, and operating environment in simulation — a digital twin where ROS 2 perception algorithms can be tested repeatedly without site visits.</p>
+            <p class="card-result">Failure cases reproduced in sim · Docker-deployed algorithms fully connected</p>
+            <div class="tags"><span>Isaac Sim</span><span>OpenUSD</span><span>RTX LiDAR</span><span>ROS 2</span><span>Docker</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sub-projects"><span>+ SIDE WORK</span>
+        <p><b>Multi-camera GigE streaming bottleneck analysis</b> · 2026.03 — 2026.04 — Diagnosed frame drops in 4-camera simultaneous streaming through four rounds of latency experiments, isolating the cause layer by layer (switch → shared PoE bandwidth → uplink) and deriving stable stream settings and a recommended network topology.</p>
+      </div>
+
+      <div class="group-label"><b>RESEARCH</b><span>Robotics & Virtual Reality Lab (RVLab), Konkuk University · 2023 – 2026</span></div>
+      <div class="card-grid">
+        <a class="card" href="projects/soar-rl.html">
+          <div class="thumb"><img src="../assets/img/soar-rl/scenario.jpg" alt="SOAR-RL training environment: intersection scenario" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2025.03 — 2025.08 · Solo · First-author SCIE journal</small>
+            <h3>SOAR-RL: RL Navigation in Narrow Spaces</h3>
+            <p class="desc">Fused 3D LiDAR and RGB to detect and track people, then trained an open-space-aware RL policy that navigates narrow spaces safely alongside humans.</p>
+            <p class="card-result">94% average success rate · 35% shorter travel time than crowd-navigation baselines · Published in Sensors</p>
+            <div class="tags"><span>Isaac Lab</span><span>DRL</span><span>Sensor Fusion</span><span>YOLOv11</span><span>Occupancy Map</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/sim-to-real-unity.html">
+          <div class="thumb"><img src="../assets/img/sim2real/unity-ros.jpg" alt="Unity training environment connected to ROS" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2023.09 — 2024.04 · Team of 6 · 80% contribution</small>
+            <h3>Sim-to-Real Driving with Unity ML-Agents</h3>
+            <p class="desc">Trained an RL driving policy in Unity, exported it to ONNX, and deployed it on a physical Husky A200 — stabilized real-world driving with LiDAR noise injection and curriculum learning.</p>
+            <p class="card-result">Stable driving over a ~50 m corridor — 6.7× the distance of the first attempt</p>
+            <div class="tags"><span>Unity ML-Agents</span><span>Sim-to-Real</span><span>ONNX</span><span>ROS</span><span>LiDAR</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/isaacsim-ros.html">
+          <div class="thumb"><img src="../assets/img/isaacsim-ros/isaac-rviz.jpg" alt="Isaac Sim driving view with RViz sensor visualization" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2024.07 — 2025.02 · Team of 6 · Project lead</small>
+            <h3>Isaac Sim Autonomous-Driving Simulation & ROS Interface</h3>
+            <p class="desc">Rebuilt a 3D-scanned lab environment in Isaac Sim and developed ROS interfaces for six LiDAR models, an IMU, and robot control. Led scheduling and module integration.</p>
+            <p class="card-result">ETRI research project · 6 LiDAR models connected over ROS · public demo video</p>
+            <div class="tags"><span>Isaac Sim</span><span>ROS</span><span>LiDAR</span><span>3D Scanning</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/mold-polishing.html">
+          <div class="thumb"><img src="../assets/img/polishing/digital-twin.jpg" alt="Digital twin of a press-die factory in Isaac Sim" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2023.05 — 2025.12 · Team of 4 · 50% · Year-2 lead</small>
+            <h3>Mold-Polishing Automation — Digital Twin & Mobile Manipulator</h3>
+            <p class="desc">Recreated an industrial site as a digital twin to pre-validate algorithms, and automated surface-roughness inspection with AprilTag localization and manipulator control.</p>
+            <p class="card-result">Repeatability error avg 1 cm · data collection 50% faster · roughness estimation +10% accuracy</p>
+            <div class="tags"><span>Isaac Sim</span><span>Digital Twin</span><span>Mobile Manipulator</span><span>AprilTag</span><span>PyQt</span></div>
+            <span class="card-more">Read more <b>→</b></span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sub-projects"><span>+ MORE RESEARCH</span>
+        <p><b>Outdoor mobile-robot autonomy experiments</b> — GPS·IMU·camera·LiDAR data collection, 2D-LiDAR dynamic obstacle avoidance, GPS trajectory visualization.</p>
+        <p><b>OmniIsaacGym obstacle-avoidance path planning</b> · <b>BARN Challenge preparation</b> · <b>Jackal navigation in Docker</b> — more research notes in the <a href="https://www.notion.so/19eb3004a5ff802f94fec18c6dbed232" target="_blank" rel="noopener" style="border-bottom:1px solid #9ca7a1">Notion archive ↗</a> (Korean).</p>
+      </div>
+    </section>
+
+    <section class="section split" id="approach">
+      <div class="section-head compact"><span>02 / APPROACH</span><div><h2>Does it work reliably<br>on the real robot?</h2></div></div>
+      <div class="principles">
+        <article><b>01</b><h3>Turn symptoms into numbers.</h3><p>"Jittery" and "slow" become standard deviations, ranges, and latency distributions. If before and after can't be compared on the same data, it isn't an improvement.</p></article>
+        <article><b>02</b><h3>Reproduce the failure conditions.</h3><p>Occlusion, long range, low light, CPU load — I turn failure conditions into repeatable tests, in both real data and simulation.</p></article>
+        <article><b>03</b><h3>Optimize accuracy and real-time together.</h3><p>Instead of only pushing detection performance, I optimize the whole system budget — ROI, execution conditions, sensor configuration.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="publications">
+      <div class="section-head">
+        <span>03 / PUBLICATIONS</span>
+        <div>
+          <h2>Publications</h2>
+          <p>During my master's (2024.03 – 2026.02): two SCIE journal papers (one first-author), one international conference paper, and eight domestic conference papers.</p>
+        </div>
+      </div>
+
+      <div class="pub-block">
+        <h3>Journal</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="pub-tag">First author · SCIE</span><span class="me">Jun, M.</span>, Park, P., Jung, H. — SOAR-RL: Safe and Open-Space Aware Reinforcement Learning for Mobile Robot Navigation in Narrow Spaces. <span class="venue">Sensors 2025, 25, 5236.</span><a href="https://doi.org/10.3390/s25175236" target="_blank" rel="noopener">DOI ↗</a></li>
+          <li><span class="pub-tag">Co-author · SCIE</span>Kim, H., <span class="me">Jun, M.</span>, Jung, H. — Multimodal RGB–LiDAR Fusion for Robust Drivable Area Segmentation and Mapping. <span class="venue">Sensors 2025, 25, 5841.</span><a href="https://doi.org/10.3390/s25185841" target="_blank" rel="noopener">DOI ↗</a></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>International Conference</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="pub-tag">Presented</span>Spatially-Aware Reinforcement Learning for Mobile Robot Navigation in Narrow Space Environments. <span class="venue">ICCAS 2025.</span></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>Domestic Conference (Korea)</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="me">Jun, M.</span>, Jung, H. — Human-Aware Occupancy Map Generation Using 3D LiDAR–RGB Camera Fusion. <span class="venue">40th ICROS Conference, 2025.06.</span></li>
+          <li class="first-author"><span class="me">Jun, M.</span>, Jung, H. — Clustering-Based Real-Time Human Recognition Using Camera-LiDAR Fusion. <span class="venue">KSME Conference, 2025.05.</span></li>
+          <li class="first-author"><span class="me">Jun, M.</span>, Jung, H. — Pass-Point-Based Path Planning for Mobile Robots Using 2D LiDAR. <span class="venue">KSME Conference, 2025.04.</span></li>
+          <li class="first-author"><span class="me">Jun, M.</span>, Jung, H. — Deep-RL Path Planning for Mobile Robots in a Digital-Twin Environment. <span class="venue">20th Korea Robotics Society Annual Conference, 2025.02.</span></li>
+          <li>Jeong, H., Luo, C., <span class="me">Jun, M.</span>, Jung, H. — Image Data Collection System for Estimating Surface Roughness of Automotive Press Dies. <span class="venue">KSME Conference, 2024.11.</span></li>
+          <li>Luo, C., <span class="me">Jun, M.</span>, Jeong, H., Jung, H. — Video-Based Estimation Method for Mold Surface Roughness. <span class="venue">KSME Conference, 2024.11.</span></li>
+          <li>Luo, C., <span class="me">Jun, M.</span>, Jung, H. — AI-Vision-Based Surface Roughness Estimation for Automotive Press Dies. <span class="venue">KSME Conference, 2024.05.</span></li>
+          <li class="first-author"><span class="me">Jun, M.</span>, Lee, J., Lee, H., Kim, H., Jung, H. — Design and Implementation of a ROS-Based Autonomous Driving and Parking System. <span class="venue">KSME Conference, 2023.11.</span></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>Awards & Research Grants</h3>
+        <div class="awards">
+          <article><b>2nd Future-Vehicle Autonomous-Driving SW Competition · Honorable Mention</b><small>2023.08 (senior year) · ROS-based autonomous driving & parking system</small></article>
+          <article><b>Press-Die Polishing Automation System</b><small>KEIT (Korea Evaluation Institute of Industrial Technology) · 2023.05 – 2025.12</small></article>
+          <article><b>Greenhouse Autonomy Simulation & ROS Interface</b><small>ETRI · 2024.07 – 2024.08</small></article>
+          <article><b>Smart Community Policing System</b><small>National Research Foundation of Korea · 2024.02 – 2024.09</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills" id="skills">
+      <div><span class="eyebrow">04 / TOOLBOX</span><h2>Tech Stack</h2></div>
+      <div class="stack">
+        <span>Isaac Sim / Isaac Lab</span><span>OpenUSD</span><span>Unity ML-Agents</span><span>ROS 1 / ROS 2</span>
+        <span>C++</span><span>Python</span><span>OpenCV</span><span>Ceres Solver</span><span>Eigen</span>
+        <span>PyTorch</span><span>LiDAR</span><span>RGB-D Camera</span><span>GigE Vision</span><span>Docker</span><span>Linux</span><span>Git</span>
+      </div>
+    </section>
+
+    <footer id="contact">
+      <div>
+        <span class="eyebrow">LET'S BUILD RELIABLE ROBOTS</span>
+        <h2>Closing the gap between<br>robots and simulation.</h2>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:minkyung2628@naver.com"><b>EMAIL</b>minkyung2628@naver.com</a>
+        <a href="https://www.notion.so/19eb3004a5ff802f94fec18c6dbed232" target="_blank" rel="noopener"><b>ARCHIVE</b>Notion research notes ↗</a>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const links=[...document.querySelectorAll('.side nav a')].filter(a=>a.getAttribute('href').startsWith('#'));
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const onScroll=()=>{
+  let idx=0;
+  secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<140)idx=i});
+  links.forEach((a,i)=>a.classList.toggle('active',i===idx));
+};
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>

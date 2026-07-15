@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOAR-RL: RL Navigation in Narrow Spaces | Minkyung Jun</title>
+<meta name="description" content="SOAR-RL fuses 3D LiDAR and RGB for human-aware perception and trains an open-space-aware RL policy for narrow-space navigation. First-author SCIE paper in Sensors.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/soar-rl.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · Flagship master's project</span>
+    <h1>SOAR-RL: Safe and Open-Space Aware<br>Reinforcement Learning Navigation</h1>
+    <div class="meta">
+      <span><b>Period</b> 2025.03 — 2025.08</span>
+      <span><b>Team</b> Solo (100%)</span>
+      <span><b>Outcome</b> First-author SCIE journal (Sensors) · ICCAS 2025</span>
+    </div>
+    <div class="link-row">
+      <a href="https://doi.org/10.3390/s25175236" target="_blank" rel="noopener">📄 Paper (Sensors 2025)</a>
+      <a class="ghost" href="https://youtu.be/Fk4qzirA5Ps" target="_blank" rel="noopener">🎬 Human detection demo</a>
+      <a class="ghost" href="https://youtu.be/alpttEQhGAk" target="_blank" rel="noopener">🎬 Obstacle avoidance demo</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>For mobile robots that must <b>coexist with people in narrow spaces</b>, I fused 3D LiDAR and RGB to estimate each pedestrian's position and velocity and generate dynamic danger zones.</li>
+      <li>Built a <b>Human-Aware Occupancy Map (HAOM)</b> layering static obstacles, humans, and danger zones, and trained an RL policy with an open-space-aware reward.</li>
+      <li><b>94% average success rate</b> across scenarios with 1–6 dynamic obstacles — shorter paths and travel times than existing crowd-navigation baselines.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>Why this is hard</h2>
+  <p>In corridors and narrow passages, a robot avoiding a person can easily corner itself against a wall — or brush past
+  the person threateningly. Classical planners treat people as mere moving obstacles and ignore where they are heading;
+  existing crowd-navigation research assumes open spaces and degrades sharply in confined ones.
+  This work starts from representing both <b>"where people are going"</b> and <b>"where the robot can escape to"</b> in the state.</p>
+
+  <h2><span class="no">METHOD 1</span>Sensor-fusion human perception</h2>
+  <p>The 3D LiDAR point cloud is preprocessed (ground removal, downsampling, ROI extraction), then matched with YOLOv11
+  person bounding boxes to cluster points per individual. Pedestrian velocity is estimated from frame-to-frame centroid
+  motion, and a danger zone is generated dynamically for each person from position and velocity.</p>
+  <figure>
+    <img src="../../assets/img/soar-rl/pipeline.png" alt="Three-stage pipeline: LiDAR preprocessing, RGB-LiDAR fusion, human clustering and danger-zone generation" loading="lazy">
+    <figcaption>Human detection pipeline — (a) 3D LiDAR preprocessing → (b) RGB-LiDAR fusion → (c) per-person clustering, tracking, and danger-zone generation. Also published as two separate conference papers.</figcaption>
+  </figure>
+
+  <h2><span class="no">METHOD 2</span>Human-Aware Occupancy Map (HAOM)</h2>
+  <p>A high-resolution occupancy map (10 m × 10 m at 0.01 m/cell) around the robot fuses three layers —
+  Static (obstacles), Human (detected people), and DangerZone — so the RL agent can distinguish
+  "empty space" from "space a person is about to cross".</p>
+  <figure>
+    <img src="../../assets/img/soar-rl/haom.png" alt="Diagram composing Static, Human, and DangerZone layers into the HAOM" loading="lazy">
+    <figcaption>HAOM composition — Static + Human + DangerZone layers, also exposing open space.</figcaption>
+  </figure>
+
+  <h2><span class="no">METHOD 3</span>Open-space-aware reward and training</h2>
+  <p>In NVIDIA Isaac Sim / Isaac Lab, dynamic obstacles were placed in walled environments. The state combines
+  HAOM obstacle information with traversable distance (open space); the reward exploits the open-space direction.
+  Straight, L-shaped, and intersection courses with 1–6 obstacles provided generalization across scenarios.</p>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/soar-rl/framework.png" alt="SOAR-RL reinforcement learning framework overview" loading="lazy"><figcaption>DRL framework overview — perception → HAOM → policy → control.</figcaption></figure>
+    <figure><img src="../../assets/img/soar-rl/scenario.jpg" alt="Intersection training scenario with robot and dynamic obstacles" loading="lazy"><figcaption>Intersection scenario — purple: dynamic obstacles, top right: goal.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">RESULTS</span>Evaluation</h2>
+  <div class="metric-row">
+    <div class="metric"><b>94%</b><small>average success rate<br>(min 87%)</small></div>
+    <div class="metric"><b>6%↓</b><small>collision rate<br>(timeout 0%)</small></div>
+    <div class="metric"><b>5.28s</b><small>mean travel time<br>fastest in comparison</small></div>
+    <div class="metric"><b>40%+</b><small>improvement over<br>classical ROS planners</small></div>
+  </div>
+  <div class="table-scroll">
+    <table class="bench">
+      <thead><tr><th>Method</th><th>SR (%) ↑</th><th>CR (%) ↓</th><th>TOR (%) ↓</th><th>μPL (m) ↓</th><th>μS (m/s)</th><th>NT (s) ↓</th></tr></thead>
+      <tbody>
+        <tr><td>ORCA</td><td>31.0</td><td>68.0</td><td>1.0</td><td>2.91</td><td>0.35</td><td>8.41</td></tr>
+        <tr><td>CADRL</td><td>78.0</td><td>16.0</td><td>6.0</td><td>4.49</td><td>0.56</td><td>8.04</td></tr>
+        <tr><td>LSTM-RL</td><td>89.0</td><td>8.0</td><td>3.0</td><td>7.05</td><td>0.87</td><td>8.10</td></tr>
+        <tr><td>DSRNN</td><td>93.0</td><td>7.0</td><td>0.0</td><td>10.01</td><td>1.02</td><td>9.78</td></tr>
+        <tr class="ours"><td>SOAR-RL (Ours)</td><td>94.0</td><td>6.0</td><td>0.0</td><td>4.21</td><td>0.61</td><td>5.28</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:12.5px">SR: success rate · CR: collision rate · TOR: timeout rate · μPL: mean path length · NT: navigation time. Highest success rate with a 58% shorter path than DSRNN.</p>
+  <figure>
+    <img src="../../assets/img/soar-rl/rollouts.png" alt="Rollouts over time in a six-obstacle environment ending in success" loading="lazy">
+    <figcaption>Rollouts with six dynamic obstacles — red: robot trajectory, purple dots: pedestrians.</figcaption>
+  </figure>
+
+  <h2><span class="no">DEMO</span>Videos</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/Fk4qzirA5Ps" title="Sensor-fusion human detection demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Real-time human detection (3D LiDAR-RGB fusion)</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/alpttEQhGAk" title="Obstacle avoidance demo" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Dynamic obstacle avoidance in narrow spaces</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="../index.html#projects"><small>← BACK</small><b>All projects</b></a>
+    <a class="next" href="sim-to-real-unity.html"><small>NEXT →</small><b>Sim-to-Real Driving with Unity ML-Agents</b></a>
+  </nav>
+</article>
+</body>
+</html>

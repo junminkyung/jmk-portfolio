@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Sim Algorithm-Validation Environment | Minkyung Jun</title>
+<meta name="description" content="A digital twin rebuilding the real robot, sensors, and operating environment in Isaac Sim, where Docker-deployed ROS 2 perception algorithms are validated repeatedly. Solo project.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>Minkyung Jun</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a><a href="../../projects/isaacsim-validation.html"><b>KO</b></a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge industry">INDUSTRY · Ongoing</span>
+    <h1>Isaac Sim<br>Algorithm-Validation Environment</h1>
+    <div class="meta">
+      <span><b>Period</b> 2026.03 — present</span>
+      <span><b>Team</b> Solo (100%)</span>
+      <span><b>Keywords</b> Isaac Sim · OpenUSD · RTX LiDAR · ROS 2 · Docker</span>
+    </div>
+  </div>
+
+  <p class="note">This is a project at my current employer. For confidentiality, product, customer, and site details are
+  omitted; the write-up focuses on the problem-solving process and engineering decisions.</p>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>Building — solo — a digital twin that converts a validation workflow dependent on site visits and vehicle data collection into <b>reproducible simulation tests</b>.</li>
+      <li>Modeled the parking robot's drivetrain and lifting motion, two 3D LiDARs, two RGB-D cameras, and an IMU in their real mounting configuration, and <b>connected the actual Docker-deployed algorithms</b>.</li>
+      <li>Failure conditions that are hard to reproduce on site — like marker occlusion — are now <b>replayed in simulation</b>, shortening the improvement cycle.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>Validation is chained to the site</h2>
+  <p>If every perception change needs a real vehicle and a real site, the development cycle is hostage to site schedules.
+  Failure conditions — marker occlusion, long range, low light — are also unsafe or impractical to reproduce on site.
+  A simulation that faithfully mirrors the robot, sensors, and environment lets the same condition be replayed
+  indefinitely while algorithms are validated.</p>
+
+  <h2><span class="no">METHOD 1</span>Modeling robot, sensors, environment</h2>
+  <ul>
+    <li><b>Robot</b> — URDF-based model including drivetrain (joints, links, wheels) and the lifting motion</li>
+    <li><b>Sensors</b> — two 3D LiDARs (RTX LiDAR), two RGB-D cameras, and an IMU at their real mounting positions and specs</li>
+    <li><b>Environment</b> — cleaned scan data of the real operating site (mesh, materials, lighting), with RTX non-visual materials reflecting LiDAR reflectance</li>
+    <li><b>Maintenance</b> — migrated Isaac Sim 5.1.0 → 6.0.1 (sensor and ROS API changes)</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../../assets/img/isaac-validation/sim-lifting.jpg" alt="Parking robot entering under a vehicle in simulation" loading="lazy"><figcaption>The parking robot entering under a vehicle — the drive-and-lift sequence reproduced in simulation.</figcaption></figure>
+    <figure><img src="../../assets/img/isaac-validation/sim-van.jpg" alt="Side view of the simulated vehicle with the robot underneath" loading="lazy"><figcaption>A real-scale vehicle model with the robot operating underneath.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">METHOD 2</span>Connecting the real algorithms</h2>
+  <ul>
+    <li>Simulation sensor data published on ROS 2 Humble with the same topic structure as the real robot</li>
+    <li>Structured configuration keeps sensor rates (Hz) consistent even in multi-sensor setups</li>
+    <li><b>Docker-deployed production perception algorithms</b> (marker detection etc.) run unmodified on simulation data</li>
+    <li>Shell-script launch environment automates repeated test procedures</li>
+  </ul>
+
+  <div class="result-band">
+    <b>CURRENT RESULT</b>
+    <ul>
+      <li>End-to-end test environment secured: robot drive/lift, LiDAR·camera output, and marker detection running against real algorithms</li>
+      <li>Docking-marker occlusion experiments replicated in simulation — cross-validated against field experiments</li>
+      <li>Environment UI in progress: manual control, robot state and topic-rate monitoring, scenario placement</li>
+    </ul>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="dual-marker.html"><small>← PREV</small><b>Dual-Marker Relative Pose Estimation — System Overhaul</b></a>
+    <a class="next" href="soar-rl.html"><small>NEXT →</small><b>SOAR-RL: RL Navigation in Narrow Spaces</b></a>
+  </nav>
+</article>
+</body>
+</html>
