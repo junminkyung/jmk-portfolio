@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Sim 자율주행 시뮬레이션 환경 구축 & ROS 연동 | 전민경</title>
+<meta name="description" content="3D 스캔한 실제 환경을 Isaac Sim으로 재구성하고 LiDAR 6종·IMU·로봇 제어의 ROS 연동 인터페이스를 개발한 ETRI 연구과제. 프로젝트 리딩 수행.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · ETRI 연구과제</span>
+    <h1>Isaac Sim 자율주행 시뮬레이션<br>환경 구축 & ROS 연동 인터페이스</h1>
+    <div class="meta">
+      <span><b>기간</b> 2024.07 — 2025.02</span>
+      <span><b>인원</b> 6인 (기여도 40% · 프로젝트 리딩)</span>
+      <span><b>발주</b> 한국전자통신연구원(ETRI)</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtu.be/pPnIYTBm6Dc" target="_blank" rel="noopener">🎬 시연 영상</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>3D 스캐너로 직접 스캔한 연구소 환경을 Isaac Sim에 재구성하고, <b>LiDAR 6종·IMU의 ROS 연동</b>과 Ranger Mini 로봇의 ROS 제어 테스트 노드를 구현했습니다.</li>
+      <li>6인 팀의 <b>전체 업무 스케줄을 조율하고 모듈 구조를 통합</b>하는 프로젝트 리딩을 맡아 최종 결과물을 완성했습니다.</li>
+      <li>이 경험은 이후 산업 현장 디지털 트윈(금형 폴리싱)과 현재 재직 중 회사의 검증 환경 구축으로 이어지는 출발점이 되었습니다.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>시뮬레이션이 필요한 이유</h2>
+  <p>온실처럼 계절·날씨에 따라 상태가 변하는 실외 환경에서는 자율주행 알고리즘을 반복 검증하기 어렵습니다.
+  실제 환경을 충실히 복제한 시뮬레이션과, 기존 ROS 스택을 그대로 연결할 수 있는 인터페이스가 있어야
+  알고리즘 개발–검증 사이클을 현장 방문 없이 돌릴 수 있습니다.</p>
+
+  <h2><span class="no">METHOD</span>환경·센서·로봇의 3요소 구축</h2>
+  <ul>
+    <li><b>환경</b> — 3D 스캐너로 스캔한 실제 연구소 공간을 정리해 Isaac Sim 환경으로 재구성</li>
+    <li><b>센서</b> — 서로 다른 스캔 패턴·채널의 LiDAR 6종과 IMU를 구현하고 ROS 토픽으로 출력 (LaserScan·PointCloud2)</li>
+    <li><b>로봇</b> — Ranger Mini 로봇 모델과 ROS 제어 테스트 노드 구현, 4가지 구동 방식(Differential·Ackermann·Custom·Double Ackermann) 로봇 모델 제작</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/isaacsim-ros/isaac-rviz.jpg" alt="Isaac Sim 주행 화면과 RViz 센서 데이터 시각화" loading="lazy"><figcaption>Isaac Sim 내 로봇 주행(좌)과 RViz 센서 데이터(우) — LaserScan과 PointCloud 출력을 함께 검증.</figcaption></figure>
+    <figure><img src="../assets/img/isaacsim-ros/robots.jpg" alt="구동 방식이 다른 4종의 로봇 모델" loading="lazy"><figcaption>구현한 로봇 모델 — Farmbot(Differential) · Hunter(Ackermann) · Ranger Mini(Custom) · Titan(Double Ackermann).</figcaption></figure>
+  </div>
+
+  <h2><span class="no">ROLE</span>프로젝트 리딩</h2>
+  <p>환경·센서·로봇 파트로 나뉜 6인의 작업을 하나의 시뮬레이션으로 통합하는 역할을 맡았습니다.
+  파트별 인터페이스(토픽 이름, 좌표계, 업데이트 주기)를 먼저 합의하고 주 단위로 통합 시점을 관리해,
+  개별 모듈이 완성된 뒤 통합에서 막히는 일 없이 일정 안에 최종 결과물을 완성했습니다.</p>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>LiDAR 6종·IMU·로봇 제어가 연동된 Isaac Sim 자율주행 시뮬레이션 환경 납품</li>
+      <li>ETRI 연구과제 "고정밀 3D 온실 모델 기반 온실자율주행 시뮬레이션 환경 구축 및 ROS 연동 인터페이스 개발" 완수</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>시연 영상</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/pPnIYTBm6Dc" title="Isaac Sim 자율주행 시뮬레이션 환경 시연" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">환경·센서·로봇 통합 시연</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="sim-to-real-unity.html"><small>← PREV</small><b>Unity ML-Agents 기반 Sim-to-Real 주행</b></a>
+    <a class="next" href="mold-polishing.html"><small>NEXT →</small><b>금형 폴리싱 자동화 — 디지털 트윈 & 모바일 매니퓰레이터</b></a>
+  </nav>
+</article>
+</body>
+</html>

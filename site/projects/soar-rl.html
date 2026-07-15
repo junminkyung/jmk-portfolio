@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOAR-RL: 협소 공간 강화학습 내비게이션 | 전민경</title>
+<meta name="description" content="3D LiDAR-RGB 카메라 융합 사람 인식과 개방 공간 인지 보상 설계로, 협소 공간에서 사람과 공존하는 모바일 로봇 내비게이션을 학습한 SOAR-RL 프로젝트. Sensors(SCIE) 1저자 게재.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · 석사 대표 연구</span>
+    <h1>SOAR-RL: Safe and Open-Space Aware<br>Reinforcement Learning Navigation</h1>
+    <div class="meta">
+      <span><b>기간</b> 2025.03 — 2025.08</span>
+      <span><b>인원</b> 1인 (기여도 100%)</span>
+      <span><b>성과</b> Sensors(SCIE) 1저자 · ICCAS 2025 발표</span>
+    </div>
+    <div class="link-row">
+      <a href="https://doi.org/10.3390/s25175236" target="_blank" rel="noopener">📄 Paper (Sensors 2025)</a>
+      <a class="ghost" href="https://youtu.be/Fk4qzirA5Ps" target="_blank" rel="noopener">🎬 사람 인식 데모</a>
+      <a class="ghost" href="https://youtu.be/alpttEQhGAk" target="_blank" rel="noopener">🎬 장애물 회피 데모</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>협소 공간에서 <b>사람과 공존</b>해야 하는 모바일 로봇을 위해, 3D LiDAR와 RGB 카메라를 융합해 개별 보행자의 위치·속도를 추정하고 위험 영역(Danger Zone)을 동적으로 생성했습니다.</li>
+      <li>정적 장애물·사람·위험 영역을 층으로 쌓은 <b>Human-Aware Occupancy Map(HAOM)</b>과, 이동 가능 방향(Open-space)을 반영한 보상 설계로 강화학습 정책을 학습했습니다.</li>
+      <li>동적 장애물 1–6개 시나리오에서 <b>평균 성공률 94%</b> — 기존 crowd navigation 알고리즘 대비 더 짧은 경로와 주행 시간을 달성했습니다.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>왜 어려운 문제인가</h2>
+  <p>복도나 통로처럼 좁은 공간에서는 로봇이 사람을 피하려다 벽에 몰리거나, 반대로 사람 곁을 위협적으로 스쳐 지나가기 쉽습니다.
+  전통적인 경로 계획은 사람을 "움직이는 장애물"로만 취급해 보행자의 진행 방향을 고려하지 못하고,
+  기존 crowd navigation 연구는 넓은 열린 공간을 가정해 협소 공간에서는 성능이 급격히 떨어집니다.
+  이 연구는 <b>"사람이 어디로 움직이는가"</b>와 <b>"로봇이 어디로 피할 수 있는가"</b>를 모두 상태로 표현하는 것에서 출발했습니다.</p>
+
+  <h2><span class="no">METHOD 1</span>센서 융합 기반 사람 인식</h2>
+  <p>3D LiDAR 포인트클라우드를 전처리(지면 제거, 다운샘플링, ROI 추출)한 뒤, YOLOv11의 사람 Bounding Box와 매칭해
+  개별 사람 단위로 군집화합니다. 프레임 간 중심점 이동으로 보행자 속도를 추정하고,
+  위치·속도 기반의 위험 영역(Danger Zone)을 사람마다 동적으로 생성합니다.</p>
+  <figure>
+    <img src="../assets/img/soar-rl/pipeline.png" alt="LiDAR 전처리, RGB-LiDAR 융합, 사람 군집화·추적·위험영역 생성으로 이어지는 3단계 파이프라인" loading="lazy">
+    <figcaption>Human detection pipeline — (a) 3D LiDAR 전처리 → (b) RGB-LiDAR 융합 → (c) 개별 사람 군집화·추적·Danger Zone 생성. 이 파이프라인은 별도 학회 논문 2편(사람 인식, HAOM)으로도 발표했습니다.</figcaption>
+  </figure>
+
+  <h2><span class="no">METHOD 2</span>Human-Aware Occupancy Map (HAOM)</h2>
+  <p>로봇 주변 10m×10m를 0.01m/cell 고해상도로 표현하는 Occupancy Map을 설계했습니다.
+  Static(정적 장애물) · Human(인식된 사람) · DangerZone(위험 영역) 세 개의 레이어를 융합해,
+  강화학습 에이전트가 "비어 있는 공간"과 "곧 사람이 지나갈 공간"을 구분할 수 있는 상태 표현을 만들었습니다.</p>
+  <figure>
+    <img src="../assets/img/soar-rl/haom.png" alt="Static, Human, DangerZone 세 레이어를 합성해 HAOM을 만드는 구성도" loading="lazy">
+    <figcaption>HAOM 구성 — Static + Human + DangerZone 레이어를 융합해 개방 공간(Open-space)까지 표현.</figcaption>
+  </figure>
+
+  <h2><span class="no">METHOD 3</span>Open-Space 인지 보상 설계와 학습</h2>
+  <p>NVIDIA Isaac Sim / Isaac Lab에서 벽이 있는 공간에 동적 장애물을 배치하고,
+  HAOM 기반 장애물 정보와 이동 가능 거리(Open-space)를 상태로, Open-space 방향을 활용한 보상 구조로 정책을 학습했습니다.
+  직선·L자·교차로 코스와 장애물 1–6개 조합으로 다양한 시나리오를 구성해 일반화 성능을 확보했습니다.</p>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/soar-rl/framework.png" alt="SOAR-RL 강화학습 프레임워크 개요도" loading="lazy"><figcaption>DRL Framework Overview — 인식 → HAOM → 정책 → 제어로 이어지는 학습 구조.</figcaption></figure>
+    <figure><img src="../assets/img/soar-rl/scenario.jpg" alt="교차로 형태의 학습 시나리오에서 로봇과 동적 장애물" loading="lazy"><figcaption>교차로(Intersection) 시나리오 — 보라색이 동적 장애물, 우측 상단이 목표 지점.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">RESULTS</span>성능 평가</h2>
+  <div class="metric-row">
+    <div class="metric"><b>94%</b><small>평균 성공률<br>(최소 87% 이상)</small></div>
+    <div class="metric"><b>6%↓</b><small>충돌률<br>(Timeout 0%)</small></div>
+    <div class="metric"><b>5.28s</b><small>평균 주행 시간<br>비교군 최단</small></div>
+    <div class="metric"><b>40%+</b><small>전통 ROS 알고리즘 대비<br>성능 향상</small></div>
+  </div>
+  <div class="table-scroll">
+    <table class="bench">
+      <thead><tr><th>Method</th><th>SR (%) ↑</th><th>CR (%) ↓</th><th>TOR (%) ↓</th><th>μPL (m) ↓</th><th>μS (m/s)</th><th>NT (s) ↓</th></tr></thead>
+      <tbody>
+        <tr><td>ORCA</td><td>31.0</td><td>68.0</td><td>1.0</td><td>2.91</td><td>0.35</td><td>8.41</td></tr>
+        <tr><td>CADRL</td><td>78.0</td><td>16.0</td><td>6.0</td><td>4.49</td><td>0.56</td><td>8.04</td></tr>
+        <tr><td>LSTM-RL</td><td>89.0</td><td>8.0</td><td>3.0</td><td>7.05</td><td>0.87</td><td>8.10</td></tr>
+        <tr><td>DSRNN</td><td>93.0</td><td>7.0</td><td>0.0</td><td>10.01</td><td>1.02</td><td>9.78</td></tr>
+        <tr class="ours"><td>SOAR-RL (Ours)</td><td>94.0</td><td>6.0</td><td>0.0</td><td>4.21</td><td>0.61</td><td>5.28</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:12.5px">SR: 성공률 · CR: 충돌률 · TOR: 시간 초과율 · μPL: 평균 경로 길이 · NT: 주행 시간. 성공률은 가장 높으면서 DSRNN 대비 경로 길이는 58% 짧습니다.</p>
+  <figure>
+    <img src="../assets/img/soar-rl/rollouts.png" alt="동적 장애물 6개 환경에서 시간에 따른 주행 경로와 성공 장면" loading="lazy">
+    <figcaption>동적 장애물 6개 환경에서의 rollout — 빨간 선이 로봇의 주행 경로, 보라색 점이 보행자.</figcaption>
+  </figure>
+
+  <h2><span class="no">DEMO</span>시연 영상</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/Fk4qzirA5Ps" title="센서 융합 기반 사람 인식 데모" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">3D LiDAR-RGB 융합 실시간 사람 인식</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/alpttEQhGAk" title="장애물 회피 주행 데모" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">협소 공간 동적 장애물 회피 주행</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="../index.html#projects"><small>← BACK</small><b>프로젝트 목록</b></a>
+    <a class="next" href="sim-to-real-unity.html"><small>NEXT →</small><b>Unity ML-Agents 기반 Sim-to-Real 주행</b></a>
+  </nav>
+</article>
+</body>
+</html>

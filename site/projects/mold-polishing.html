@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>금형 폴리싱 자동화 — 디지털 트윈 & 모바일 매니퓰레이터 | 전민경</title>
+<meta name="description" content="차체 프레스 금형 공장을 디지털 트윈으로 재현하고 모바일 매니퓰레이터로 표면 조도 검사를 자동화한 국책 연구과제. 2년차 프로젝트 리딩.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH · 국책과제 (한국산업기술평가관리원)</span>
+    <h1>차체 프레스 금형 폴리싱 자동화<br>디지털 트윈 & 모바일 매니퓰레이터</h1>
+    <div class="meta">
+      <span><b>기간</b> 2023.05 — 2025.12</span>
+      <span><b>인원</b> 4인 (기여도 50% · 2년차 리딩)</span>
+      <span><b>성과</b> 관련 학회 논문 3편</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtu.be/hKIdTsm_5Jg" target="_blank" rel="noopener">🎬 시뮬레이션</a>
+      <a class="ghost" href="https://youtube.com/shorts/Aun_ZGvvsxA" target="_blank" rel="noopener">🎬 테스트 베드</a>
+      <a class="ghost" href="https://youtu.be/zJNtqp4xWBU" target="_blank" rel="noopener">🎬 산업 현장</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>차체 프레스 금형 공장을 3D 스캔해 <b>Isaac Sim 디지털 트윈</b>으로 재현하고, 데모 핵심 알고리즘을 현장 투입 전에 시뮬레이션에서 검증했습니다.</li>
+      <li>AprilTag 기반 모바일 플랫폼 위치 추정과 매니퓰레이터 제어를 개발해 <b>반복 정밀도 평균 오차 1cm</b>를 달성했습니다.</li>
+      <li>PyQt GUI로 데이터 수집 속도를 약 50% 높이고, 골(valley)의 outlier를 제거한 새로운 표면 거칠기(Ra) 지표를 제안해 <b>조도 추정 정확도를 약 10% 개선</b>했습니다.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">STEP 1</span>디지털 트윈 환경 구축</h2>
+  <p>실제 금형 공장을 3D 스캐너로 스캔해 Isaac Sim에 정밀한 디지털 트윈을 구축했습니다.
+  여러 기관이 협업하는 과제 특성상 현장 테스트 기회가 제한적이었기 때문에,
+  데모 시연에 필요한 핵심 알고리즘(주행 경로, 접근 자세, 검사 시퀀스)을 디지털 트윈에서 먼저 검증하고 현장에 나갔습니다.</p>
+  <figure>
+    <img src="../assets/img/polishing/digital-twin.jpg" alt="Isaac Sim으로 재현한 프레스 금형 공장과 모바일 매니퓰레이터" loading="lazy">
+    <figcaption>Isaac Sim으로 재현한 금형 공장 디지털 트윈 — 금형 2기와 모바일 매니퓰레이터(좌측 하단).</figcaption>
+  </figure>
+
+  <h2><span class="no">STEP 2</span>위치 추정·제어 알고리즘과 조도 추정 개선</h2>
+  <ul>
+    <li><b>위치 추정</b> — AprilTag 인식 기반 모바일 플랫폼 위치 추정 알고리즘 설계·구현</li>
+    <li><b>매니퓰레이터 제어</b> — Python SDK 기반 제어로 반복 정밀도 평균 오차 1cm, 최대 2cm 달성</li>
+    <li><b>데이터 수집 효율화</b> — 시편 촬영과 조도 측정을 통합한 PyQt GUI로 수집 속도 약 50% 향상</li>
+    <li><b>조도 추정 개선</b> — 골(valley)의 outlier를 제거한 새로운 표면 거칠기(Ra) 산출 방식을 제안, 조도 추정 정확도 약 10% 향상</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/polishing/factory-site.jpg" alt="실제 금형 공장에서 검사 중인 모바일 매니퓰레이터" loading="lazy"><figcaption>실제 산업 현장 — AprilTag 마커 위에서 금형 표면을 검사하는 모바일 매니퓰레이터.</figcaption></figure>
+    <figure><img src="../assets/img/polishing/gui.png" alt="영상 촬영과 Ra 측정, 로봇 팔 제어가 통합된 PyQt GUI" loading="lazy"><figcaption>데이터 수집 GUI — 촬영·Ra 추정·로봇 팔 이동을 한 화면에서 처리.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">ROLE</span>2년차 프로젝트 리딩</h2>
+  <p>2년차부터는 여러 기관과의 협업 창구를 맡아 현장 엔지니어와의 통합 테스트를 조율했습니다.
+  시뮬레이션 검증 → 테스트 베드 → 실제 현장의 3단계로 데모를 준비해, 제한된 현장 접근 시간 안에 통합 시연을 완수했습니다.</p>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>매니퓰레이터 반복 정밀도 평균 오차 1cm (최대 2cm)</li>
+      <li>데이터 수집 속도 약 50% 향상 · 조도 추정 정확도 약 10% 개선</li>
+      <li>표면 조도 추정 관련 학회 논문 3편 발표 (대한기계학회 2024)</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>시연 영상</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/hKIdTsm_5Jg" title="디지털 트윈 시뮬레이션 시연" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">디지털 트윈 시뮬레이션</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/zJNtqp4xWBU" title="산업 현장 시연" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">산업 현장 통합 시연</p>
+    </div>
+    <div>
+      <div class="video-wrap vertical"><iframe src="https://www.youtube.com/embed/Aun_ZGvvsxA" title="테스트 베드 시연" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">테스트 베드 검증</p>
+    </div>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="isaacsim-ros.html"><small>← PREV</small><b>Isaac Sim 자율주행 시뮬레이션 환경 구축</b></a>
+    <a class="next" href="dual-marker-pose.html"><small>NEXT →</small><b>듀얼 마커 기반 상대 자세 추정 안정화</b></a>
+  </nav>
+</article>
+</body>
+</html>

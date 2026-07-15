@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전민경 | Robotics Software Engineer</title>
+<meta name="description" content="시뮬레이션 기반 검증과 로봇 인지 알고리즘을 다루는 로보틱스 소프트웨어 엔지니어 전민경의 포트폴리오. Isaac Sim 디지털 트윈, Sim-to-Real 강화학습, 센서 융합 인지.">
+<meta property="og:title" content="전민경 | Robotics Software Engineer">
+<meta property="og:description" content="Isaac Sim 디지털 트윈 · Sim-to-Real 강화학습 · 센서 융합 인지. 실제 로봇의 문제를 재현하고 수치로 개선합니다.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="portfolio-shell">
+  <aside class="side">
+    <a class="identity" href="#home"><span>MK</span><div><b>전민경</b><small>ROBOTICS SW ENGINEER</small></div></a>
+    <nav>
+      <a href="#home" class="active">Overview</a>
+      <a href="#projects">Projects</a>
+      <a href="#approach">Approach</a>
+      <a href="#publications">Publications</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="side-note"><span>FOCUS</span><strong>Simulation × Perception</strong><p>실제 로봇의 문제를 재현하고 검증 가능한 소프트웨어로 바꿉니다.</p></div>
+    <small class="copyright">© 2026 JEON MINKYUNG</small>
+  </aside>
+
+  <main>
+    <header class="top"><span>PORTFOLIO · UPDATED 2026.07</span><div><i></i>Robotics SW Engineer · Seoul</div></header>
+
+    <section class="hero" id="home">
+      <div>
+        <span class="eyebrow">ROBOTICS · SIMULATION · PERCEPTION</span>
+        <h1>로봇이 현실에서<br><em>안정적으로 동작하도록</em><br>검증합니다.</h1>
+        <p>Isaac Sim 기반 디지털 트윈부터 ROS 2 센서 파이프라인, 카메라·LiDAR 인지 알고리즘까지.
+        석사 과정에서는 강화학습 정책을 실제 로봇에 전이하는 Sim-to-Real 연구로 SCIE 저널 1저자 논문(Sensors, 2025)을 게재했고,
+        현재는 자율주행 주차 로봇 기업에서 인지 알고리즘과 시뮬레이션 검증 환경을 개발하고 있습니다.
+        실제 환경에서 발견한 문제를 재현하고 수치로 개선하는 것이 저의 방식입니다.</p>
+        <div class="actions"><a href="#projects">프로젝트 보기 <b>↘</b></a><a href="#publications">논문 목록 →</a></div>
+      </div>
+      <div class="focus-card">
+        <span>ENGINEERING FOCUS</span>
+        <h2>Sim-to-Real<br>Validation Loop</h2>
+        <ol>
+          <li><b>01</b><div>MODEL<small>로봇·센서·환경을 시뮬레이션으로 모델링</small></div></li>
+          <li><b>02</b><div>CONNECT<small>ROS 2 · 인지 파이프라인 연동</small></div></li>
+          <li><b>03</b><div>VALIDATE<small>실패 재현 · 정량 비교 · 개선</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-head">
+        <span>01 / PROJECTS</span>
+        <div>
+          <h2>문제와 결과가<br>분명한 프로젝트</h2>
+          <p>산업 현장의 실무 프로젝트와 석사 과정의 연구 프로젝트를 함께 정리했습니다.
+          실무 프로젝트는 보안을 위해 회사·제품 정보를 제외하고 문제 해결 과정과 기술적 판단 중심으로 서술했습니다.
+          각 카드를 누르면 이미지·영상이 포함된 상세 페이지로 이동합니다.</p>
+        </div>
+      </div>
+
+      <div class="group-label"><b>INDUSTRY</b><span>자율주행 주차 로봇 · 2026.01 – 현재</span></div>
+      <div class="card-grid">
+        <a class="card" href="projects/dual-marker-pose.html">
+          <div class="thumb contain"><img src="assets/img/dual-marker/filter-stages.png" alt="필터 단계별 pitch 시계열 그래프" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
+          <div class="card-body">
+            <small>2026.01 — 2026.06 · 2인 · 기여도 65%</small>
+            <h3>듀얼 마커 기반 상대 자세 추정 안정화</h3>
+            <p class="desc">사실상 동작하지 않던 필터링 파이프라인의 구조적 결함을 찾아내고, Ceres 비선형 최적화와 쿼터니언 특성을 고려한 필터로 재설계했습니다.</p>
+            <p class="card-result">pitch 노이즈 59% 감소 · 2° 이상 튀는 프레임 완전 소거</p>
+            <div class="tags"><span>C++</span><span>Ceres Solver</span><span>OpenCV</span><span>Quaternion</span><span>Filtering</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/marker-optimization.html">
+          <div class="thumb"><img src="assets/img/marker-opt/roi-tracking.png" alt="차량 하부 저조도 환경의 Dynamic ROI 추적" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
+          <div class="card-body">
+            <small>2026.03 — 2026.05 · 검출·비용 동시 최적화</small>
+            <h3>마커 검출 성능·연산 최적화</h3>
+            <p class="desc">장축 차량에서의 원거리 미검출을 해결하면서, 그로 인해 늘어난 연산 비용을 Kalman Filter 기반 Dynamic ROI와 실행 조건 제어로 되돌렸습니다.</p>
+            <p class="card-result">주행 중 검출 약 17배 증가 · 처리 시간 50% 단축</p>
+            <div class="tags"><span>Computer Vision</span><span>Dynamic ROI</span><span>Kalman Filter</span><span>ROS 2</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/isaacsim-validation.html">
+          <div class="thumb"><img src="assets/img/isaac-validation/sim-lifting.jpg" alt="Isaac Sim에서 주차 로봇이 차량 하부로 진입한 장면" loading="lazy"><span class="badge industry">INDUSTRY</span></div>
+          <div class="card-body">
+            <small>2026.03 — 현재 · 1인 · 기여도 100%</small>
+            <h3>Isaac Sim 기반 알고리즘 검증 환경</h3>
+            <p class="desc">실제 로봇·센서·운용 환경을 시뮬레이션에 재구성하고, ROS 2 인지 알고리즘을 반복 검증할 수 있는 디지털 트윈 환경을 단독으로 구축하고 있습니다.</p>
+            <p class="card-result">현장 방문 없이 실패 상황 재현 · Docker 알고리즘 연동 완료</p>
+            <div class="tags"><span>Isaac Sim</span><span>OpenUSD</span><span>RTX LiDAR</span><span>ROS 2</span><span>Docker</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sub-projects"><span>+ SIDE WORK</span>
+        <p><b>멀티카메라 GigE 스트리밍 병목 분석</b> · 2026.03 — 2026.04 — 카메라 4대 동시 스트리밍의 프레임 유실 원인을 4차례 실험과 지연 측정으로 계층별(스위치 → PoE 공유 대역폭 → 업링크) 규명하고, 안정 동작 스트림 조건과 권장 네트워크 구성을 도출했습니다.</p>
+      </div>
+
+      <div class="group-label"><b>RESEARCH</b><span>건국대학교 로봇 및 가상현실 연구실(RVLab) · 2023 – 2026</span></div>
+      <div class="card-grid">
+        <a class="card" href="projects/soar-rl.html">
+          <div class="thumb"><img src="assets/img/soar-rl/scenario.jpg" alt="교차로 시나리오에서의 SOAR-RL 학습 환경" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2025.03 — 2025.08 · 1인 · SCIE 저널 1저자</small>
+            <h3>SOAR-RL: 협소 공간 강화학습 내비게이션</h3>
+            <p class="desc">3D LiDAR-카메라 융합으로 사람을 인식하고, 개방 공간(Open-space)을 고려한 강화학습으로 협소 공간에서 사람과 공존하는 주행 정책을 학습했습니다.</p>
+            <p class="card-result">성공률 평균 94% · 기존 crowd navigation 대비 주행 시간 35% 단축 · Sensors 게재</p>
+            <div class="tags"><span>Isaac Lab</span><span>DRL</span><span>Sensor Fusion</span><span>YOLOv11</span><span>Occupancy Map</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/sim-to-real-unity.html">
+          <div class="thumb"><img src="assets/img/sim2real/unity-ros.jpg" alt="Unity 학습 환경과 ROS 연동 화면" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2023.09 — 2024.04 · 6인 · 기여도 80%</small>
+            <h3>Unity ML-Agents 기반 Sim-to-Real 주행</h3>
+            <p class="desc">Unity에서 학습한 강화학습 주행 정책을 ONNX로 변환해 실제 로봇(Husky A200)에 전이하고, 노이즈 주입과 Curriculum Learning으로 실환경 주행을 안정화했습니다.</p>
+            <p class="card-result">약 50m 직선 복도 안정 주행 — 1차 실험 대비 주행 거리 6.7배</p>
+            <div class="tags"><span>Unity ML-Agents</span><span>Sim-to-Real</span><span>ONNX</span><span>ROS</span><span>LiDAR</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/isaacsim-ros.html">
+          <div class="thumb"><img src="assets/img/isaacsim-ros/isaac-rviz.jpg" alt="Isaac Sim 주행 화면과 RViz 센서 시각화" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2024.07 — 2025.02 · 6인 · 프로젝트 리딩</small>
+            <h3>Isaac Sim 자율주행 시뮬레이션 환경 구축</h3>
+            <p class="desc">3D 스캔한 실제 연구소 환경을 Isaac Sim으로 재구성하고, LiDAR 6종·IMU·로봇 제어의 ROS 연동 인터페이스를 개발했습니다. 전체 일정과 모듈 통합을 리딩했습니다.</p>
+            <p class="card-result">ETRI 연구과제 · LiDAR 6종 ROS 연동 · 시연 영상 공개</p>
+            <div class="tags"><span>Isaac Sim</span><span>ROS</span><span>LiDAR</span><span>3D Scanning</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+        <a class="card" href="projects/mold-polishing.html">
+          <div class="thumb"><img src="assets/img/polishing/digital-twin.jpg" alt="Isaac Sim으로 재현한 프레스 금형 공장 디지털 트윈" loading="lazy"><span class="badge research">RESEARCH</span></div>
+          <div class="card-body">
+            <small>2023.05 — 2025.12 · 4인 · 기여도 50% · 2년차 리딩</small>
+            <h3>금형 폴리싱 자동화 — 디지털 트윈 & 모바일 매니퓰레이터</h3>
+            <p class="desc">산업 현장을 디지털 트윈으로 재현해 알고리즘을 사전 검증하고, AprilTag 기반 위치 추정과 매니퓰레이터 제어로 표면 조도 검사를 자동화했습니다.</p>
+            <p class="card-result">반복 정밀도 평균 오차 1cm · 데이터 수집 속도 50% 향상 · 조도 추정 정확도 10% 개선</p>
+            <div class="tags"><span>Isaac Sim</span><span>Digital Twin</span><span>Mobile Manipulator</span><span>AprilTag</span><span>PyQt</span></div>
+            <span class="card-more">상세 보기 <b>→</b></span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sub-projects"><span>+ MORE RESEARCH</span>
+        <p><b>실외 환경 모바일 로봇 자율주행 실험·분석</b> — GPS·IMU·Camera·LiDAR 데이터 수집과 2D LiDAR 기반 동적 장애물 회피 주행, GPS 궤적 시각화.</p>
+        <p><b>OmniIsaacGym 기반 장애물 회피 경로 계획</b> · <b>BARN Challenge 준비</b> · <b>Docker 환경 Jackal Navigation 설계</b> — 그 외 연구 기록은 <a href="https://www.notion.so/19eb3004a5ff802f94fec18c6dbed232" target="_blank" rel="noopener" style="border-bottom:1px solid #9ca7a1">Notion 아카이브 ↗</a>에 정리되어 있습니다.</p>
+      </div>
+    </section>
+
+    <section class="section split" id="approach">
+      <div class="section-head compact"><span>02 / APPROACH</span><div><h2>실제 로봇에서<br>안정적으로 동작하는가?</h2></div></div>
+      <div class="principles">
+        <article><b>01</b><h3>현상을 수치로 바꿉니다.</h3><p>감각적인 '떨림'이나 '느림'을 표준편차, 변동 범위, 처리 시간 분포로 정의합니다. 개선 전후를 같은 데이터로 비교할 수 없다면 개선이 아니라고 생각합니다.</p></article>
+        <article><b>02</b><h3>실패 조건을 재현합니다.</h3><p>가림, 원거리, 저조도, 연산 부하 같은 실패 상황을 실제 데이터와 시뮬레이션 양쪽에서 반복 가능한 시험으로 만듭니다.</p></article>
+        <article><b>03</b><h3>정확도와 실시간성을 함께 봅니다.</h3><p>검출 성능만 올리지 않고 ROI, 실행 조건, 센서 구성까지 시스템 전체 비용을 함께 최적화합니다.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="publications">
+      <div class="section-head">
+        <span>03 / PUBLICATIONS</span>
+        <div>
+          <h2>논문 및 연구 실적</h2>
+          <p>석사 과정(2024.03 – 2026.02) 동안 SCIE 저널 2편(1저자 1편)과 국내 학술대회 8편, 국제 학술대회 1편을 발표했습니다.</p>
+        </div>
+      </div>
+
+      <div class="pub-block">
+        <h3>Journal</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="pub-tag">1저자 · SCIE</span><span class="me">Jun, M.</span>, Park, P., Jung, H. — SOAR-RL: Safe and Open-Space Aware Reinforcement Learning for Mobile Robot Navigation in Narrow Spaces. <span class="venue">Sensors 2025, 25, 5236.</span><a href="https://doi.org/10.3390/s25175236" target="_blank" rel="noopener">DOI ↗</a></li>
+          <li><span class="pub-tag">공동저자 · SCIE</span>Kim, H., <span class="me">Jun, M.</span>, Jung, H. — Multimodal RGB–LiDAR Fusion for Robust Drivable Area Segmentation and Mapping. <span class="venue">Sensors 2025, 25, 5841.</span><a href="https://doi.org/10.3390/s25185841" target="_blank" rel="noopener">DOI ↗</a></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>International Conference</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="pub-tag">발표</span>Spatially-Aware Reinforcement Learning for Mobile Robot Navigation in Narrow Space Environments. <span class="venue">ICCAS 2025.</span></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>Domestic Conference</h3>
+        <ul class="pub-list">
+          <li class="first-author"><span class="me">전민경</span>, 정회룡 — 3D LiDAR-RGB Camera 융합을 활용한 Human-Aware Occupancy Map 생성. <span class="venue">제40회 제어로봇시스템학회 학술대회, 2025.06.</span></li>
+          <li class="first-author"><span class="me">전민경</span>, 정회룡 — Camera-LiDAR 융합을 이용한 군집화 기반 실시간 사람 인식. <span class="venue">대한기계학회 IT지능융합부문 춘계학술대회, 2025.05.</span></li>
+          <li class="first-author"><span class="me">전민경</span>, 정회룡 — 2D LiDAR를 이용한 모바일 로봇의 Pass Point 기반 경로 계획. <span class="venue">대한기계학회 동역학·제어·로봇부문 춘계학술대회, 2025.04.</span></li>
+          <li class="first-author"><span class="me">전민경</span>, 정회룡 — 디지털 트윈 환경에서 심층강화학습을 활용한 모바일 로봇의 경로계획. <span class="venue">제20회 한국로봇종합학술대회, 2025.02.</span></li>
+          <li>정현진, 라성룡, <span class="me">전민경</span>, 정회룡 — 차체 프레스 금형의 표면 조도 추정을 위한 영상 데이터 수집 시스템. <span class="venue">대한기계학회 학술대회, 2024.11.</span></li>
+          <li>라성룡, <span class="me">전민경</span>, 정현진, 정회룡 — 영상기반 금형 표면 조도 추정 방법. <span class="venue">대한기계학회 학술대회, 2024.11.</span></li>
+          <li>라성룡, <span class="me">전민경</span>, 정회룡 — AI 비전 기반 차체 프레스 금형의 표면 조도 추정 알고리즘 개발. <span class="venue">대한기계학회 IT지능융합부문 춘계학술대회, 2024.05.</span></li>
+          <li class="first-author"><span class="me">전민경</span>, 이정우, 이호연, 김현민, 정회룡 — ROS를 활용한 자율주행과 주차 시스템 설계 및 구현. <span class="venue">대한기계학회 학술대회, 2023.11.</span></li>
+        </ul>
+      </div>
+
+      <div class="pub-block">
+        <h3>Awards & Research Grants</h3>
+        <div class="awards">
+          <article><b>제2회 미래형자동차 자율주행 SW 경진대회 · 장려상</b><small>ROS 기반 자율주행·주차 시스템 설계 및 구현</small></article>
+          <article><b>차체 프레스 금형 폴리싱 자동화 시스템 개발</b><small>한국산업기술평가관리원 · 2023.05 – 2025.12</small></article>
+          <article><b>온실 자율주행 시뮬레이션 환경 구축 및 ROS 연동</b><small>한국전자통신연구원(ETRI) · 2024.07 – 2024.08</small></article>
+          <article><b>스마트 커뮤니티 폴리싱 시스템 개발</b><small>한국연구재단 · 2024.02 – 2024.09</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills" id="skills">
+      <div><span class="eyebrow">04 / TOOLBOX</span><h2>기술 스택</h2></div>
+      <div class="stack">
+        <span>Isaac Sim / Isaac Lab</span><span>OpenUSD</span><span>Unity ML-Agents</span><span>ROS 1 / ROS 2</span>
+        <span>C++</span><span>Python</span><span>OpenCV</span><span>Ceres Solver</span><span>Eigen</span>
+        <span>PyTorch</span><span>LiDAR</span><span>RGB-D Camera</span><span>GigE Vision</span><span>Docker</span><span>Linux</span><span>Git</span>
+      </div>
+    </section>
+
+    <footer id="contact">
+      <div>
+        <span class="eyebrow">LET'S BUILD RELIABLE ROBOTS</span>
+        <h2>로봇과 시뮬레이션 사이의<br>간극을 줄입니다.</h2>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:minkyung2628@naver.com"><b>EMAIL</b>minkyung2628@naver.com</a>
+        <a href="https://www.notion.so/19eb3004a5ff802f94fec18c6dbed232" target="_blank" rel="noopener"><b>ARCHIVE</b>Notion 연구 기록 ↗</a>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const links=[...document.querySelectorAll('.side nav a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const onScroll=()=>{
+  let idx=0;
+  secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<140)idx=i});
+  links.forEach((a,i)=>a.classList.toggle('active',i===idx));
+};
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>

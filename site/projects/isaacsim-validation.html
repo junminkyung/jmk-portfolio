@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Sim 기반 알고리즘 검증 환경 | 전민경</title>
+<meta name="description" content="실제 로봇·센서·운용 환경을 Isaac Sim에 재구성하고, Docker로 배포되는 ROS 2 인지 알고리즘을 반복 검증하는 디지털 트윈 환경을 단독 구축한 프로젝트.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge industry">INDUSTRY · 진행 중</span>
+    <h1>Isaac Sim 기반<br>알고리즘 검증 환경 구축</h1>
+    <div class="meta">
+      <span><b>기간</b> 2026.03 — 현재</span>
+      <span><b>인원</b> 1인 (기여도 100%)</span>
+      <span><b>키워드</b> Isaac Sim · OpenUSD · RTX LiDAR · ROS 2 · Docker</span>
+    </div>
+  </div>
+
+  <p class="note">재직 중인 회사의 프로젝트입니다. 보안을 위해 제품·고객·운용 환경 정보는 제외하고, 문제 해결 과정과 기술적 판단 중심으로 정리했습니다.</p>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>현장 방문과 실차 데이터 수집에 의존하던 알고리즘 검증 흐름을, <b>재현 가능한 시뮬레이션 시험</b>으로 전환하기 위한 디지털 트윈 환경을 단독으로 구축하고 있습니다.</li>
+      <li>주차 로봇의 구동계·리프팅 동작부터 3D LiDAR 2종·RGB-D 카메라 2종·IMU까지 실제 센서 구성 그대로 모델링하고, <b>Docker로 배포되는 실제 알고리즘과 연동</b>을 완료했습니다.</li>
+      <li>마커 가림 실험 등 <b>현장에서 재현하기 어려운 실패 상황</b>을 시뮬레이션에서 모사해 개선 사이클을 단축하고 있습니다.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">PROBLEM</span>검증이 현장에 묶여 있다</h2>
+  <p>인지 알고리즘을 수정할 때마다 실차와 현장이 필요하면 개발 사이클이 현장 일정에 묶입니다.
+  특히 마커 가림, 원거리, 저조도 같은 실패 조건은 현장에서 안전하게 재현하기 어렵습니다.
+  실제 로봇·센서·환경을 충분히 닮은 시뮬레이션이 있으면, 같은 조건을 몇 번이고 반복하며 알고리즘을 검증할 수 있습니다.</p>
+
+  <h2><span class="no">METHOD 1</span>로봇·센서·환경 모델링</h2>
+  <ul>
+    <li><b>로봇</b> — URDF 기반으로 구동계(조인트·링크·휠)와 리프팅 동작까지 구현</li>
+    <li><b>센서</b> — 3D LiDAR 2종(RTX LiDAR), RGB-D 카메라 2종, IMU를 실제 장착 위치·사양에 맞게 구성</li>
+    <li><b>환경</b> — 실제 운용 환경의 스캔 데이터를 정리(메시·재질·조명)해 시뮬레이션 환경으로 재구성, RTX Non-visual Material로 LiDAR 반사 특성까지 반영</li>
+    <li><b>유지보수</b> — Isaac Sim 5.1.0 → 6.0.1 버전 마이그레이션 (센서·ROS API 변경 대응)</li>
+  </ul>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/isaac-validation/sim-lifting.jpg" alt="시뮬레이션에서 주차 로봇이 차량 하부로 진입한 장면" loading="lazy"><figcaption>차량 하부로 진입한 주차 로봇 — 구동·리프팅 시퀀스를 시뮬레이션에서 재현.</figcaption></figure>
+    <figure><img src="../assets/img/isaac-validation/sim-van.jpg" alt="시뮬레이션 차량 측면과 하부의 로봇" loading="lazy"><figcaption>실차 규격의 차량 모델과 하부에서 동작 중인 로봇.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">METHOD 2</span>실제 알고리즘과의 연동</h2>
+  <ul>
+    <li>ROS 2 Humble 기반으로 시뮬레이션 센서 데이터를 실제와 동일한 토픽 구조로 발행</li>
+    <li>멀티 센서 환경에서도 일정한 센서 데이터 주기(hz)를 유지하도록 설정 구조화</li>
+    <li><b>Docker로 배포되는 실제 인지 알고리즘</b>(마커 검출 등)과 연동 완료 — 시뮬레이션 데이터로 실제 코드가 그대로 동작</li>
+    <li>쉘 스크립트 기반 실행 환경으로 반복 시험 절차 자동화</li>
+  </ul>
+
+  <div class="result-band">
+    <b>CURRENT RESULT</b>
+    <ul>
+      <li>로봇 구동·리프팅, LiDAR·카메라 출력, 마커 검출까지 실제 알고리즘 연동 시험 환경 확보</li>
+      <li>도킹 마커 가림 실험을 시뮬레이션으로 모사 — 현장 실험과 교차 검증 진행</li>
+      <li>환경 UI(수동 조종, 로봇 상태·토픽 주기 확인, 시나리오 배치) 제작 진행 중</li>
+    </ul>
+  </div>
+
+  <nav class="detail-nav">
+    <a href="marker-optimization.html"><small>← PREV</small><b>마커 검출 성능·연산 최적화</b></a>
+    <a class="next" href="soar-rl.html"><small>NEXT →</small><b>SOAR-RL: 협소 공간 강화학습 내비게이션</b></a>
+  </nav>
+</article>
+</body>
+</html>

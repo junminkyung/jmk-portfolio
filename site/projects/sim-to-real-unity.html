@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unity ML-Agents 기반 Sim-to-Real 주행 | 전민경</title>
+<meta name="description" content="Unity ML-Agents에서 학습한 강화학습 주행 정책을 ONNX로 변환해 실제 로봇(Clearpath Husky A200)에 전이한 Sim-to-Real 프로젝트.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="detail-top">
+  <a class="home" href="../index.html"><span>MK</span>전민경</a>
+  <nav><a href="../index.html#projects">Projects</a><a href="../index.html#publications">Publications</a><a href="../index.html#contact">Contact</a></nav>
+</header>
+
+<article class="detail">
+  <div class="detail-head">
+    <span class="badge research">RESEARCH</span>
+    <h1>Unity ML-Agents 기반<br>모바일 로봇 Sim-to-Real 주행</h1>
+    <div class="meta">
+      <span><b>기간</b> 2023.09 — 2024.04</span>
+      <span><b>인원</b> 6인 (기여도 80%)</span>
+      <span><b>플랫폼</b> Clearpath Husky A200 · VLP-16</span>
+    </div>
+    <div class="link-row">
+      <a class="ghost" href="https://youtube.com/shorts/4yMeqzcyT-4" target="_blank" rel="noopener">🎬 실제 로봇 주행</a>
+      <a class="ghost" href="https://youtu.be/7N3GAzfNiMA" target="_blank" rel="noopener">🎬 Curriculum Learning</a>
+    </div>
+  </div>
+
+  <div class="tldr">
+    <b>TL;DR</b>
+    <ul>
+      <li>Unity ML-Agents로 미로·정적 장애물·실제 건물 복도 3종의 학습 환경을 구축하고, 실제 센서(VLP-16) 사양에 맞춘 LiDAR 시뮬레이션을 제작했습니다.</li>
+      <li>학습된 정책을 <b>ONNX로 변환해 ROS 기반 실제 로봇에 전이</b>하고, LiDAR 노이즈 주입과 Curriculum Learning으로 Sim-to-Real 간극을 줄였습니다.</li>
+      <li>최종적으로 <b>약 50m 직선 복도 안정 주행</b>에 성공 — 1차 실험 대비 주행 거리 약 6.7배.</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">STEP 1</span>강화학습 환경 구축</h2>
+  <p>실제 로봇에 사용할 Velodyne VLP-16 사양(채널 수, FOV, 거리 범위)에 맞춰 Unity에서 LiDAR를 직접 구현하고,
+  거리 값을 강화학습의 상태(state)로 사용했습니다. 학습 환경은 난이도 순서로 미로, 정적 장애물, 실제 연구실 건물 복도 세 가지를 제작했습니다.</p>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/sim2real/maze-env.jpg" alt="T자형 미로 학습 환경" loading="lazy"><figcaption>미로 학습 환경 — 로봇(좌측)과 목표 지점(우측 하단).</figcaption></figure>
+    <figure><img src="../assets/img/sim2real/unity-ros.jpg" alt="Unity Scene 뷰와 Game 뷰에서 시각화한 LiDAR 포인트클라우드" loading="lazy"><figcaption>구현한 LiDAR의 포인트클라우드 시각화 (좌: Scene view, 우: Game view) — 우측 상단에 ROS 연결 정보.</figcaption></figure>
+  </div>
+
+  <h2><span class="no">STEP 2</span>보상 설계와 학습 특성 분석</h2>
+  <p>LiDAR 사용 여부, 주행 거리·시간, 충돌을 종합적으로 고려해 보상 함수와 종료 조건을 설계하고,
+  설계 변경이 학습에 미치는 영향을 보상 곡선으로 분석했습니다. 대표적으로, 매 스텝 음의 보상(-0.01)만 주면
+  에이전트가 에피소드를 빨리 끝내려고 <b>고의로 충돌하는 문제</b>를 발견했고, 에피소드 시간 제한(60초)으로 바꿔
+  학습 시간을 약 50% 단축하면서 수렴에 성공했습니다.</p>
+  <figure>
+    <img src="../assets/img/sim2real/reward-curves.png" alt="보상 설계 두 가지 버전의 누적 보상 곡선 비교" loading="lazy">
+    <figcaption>보상·종료 조건 설계에 따른 학습 양상 비교 — 위: 스텝당 음의 보상(고의 충돌로 미수렴), 아래: 시간 제한 방식(수렴 성공).</figcaption>
+  </figure>
+
+  <h2><span class="no">STEP 3</span>Sim-to-Real 전이</h2>
+  <p>학습된 정책을 ONNX 모델로 변환한 뒤 ROS(Ubuntu 18.04, Melodic) 노드로 감싸 실제 Husky A200을 제어했습니다.
+  초기에는 시뮬레이션과 실제 LiDAR의 차이로 주행이 금방 불안정해졌는데,
+  시뮬레이션 LiDAR에 Gaussian Noise를 주입하고 직선 → 교차로 → 실제 복도 순의 Curriculum Learning을 적용해 개선했습니다.</p>
+  <div class="fig-grid">
+    <figure><img src="../assets/img/sim2real/node-graph.png" alt="ONNX 추론 노드를 중심으로 한 ROS 노드 그래프" loading="lazy"><figcaption>ROS 제어 노드 그래프 — /scan, /goal을 입력받아 ONNX 추론 노드가 속도 명령을 출력.</figcaption></figure>
+    <figure><img src="../assets/img/sim2real/curriculum.png" alt="직선, 교차로, 복도로 이어지는 커리큘럼 환경과 실제 로봇 주행 데이터" loading="lazy"><figcaption>Curriculum Learning 환경(직선 → 교차로 → 연구실 복도)과 주행 로그.</figcaption></figure>
+  </div>
+
+  <div class="result-band">
+    <b>RESULT</b>
+    <ul>
+      <li>약 50m 직선 복도 구간 안정 주행 성공 — 1차 실험 대비 주행 거리 약 6.7배</li>
+      <li>노이즈 주입 + Curriculum Learning으로 Sim-to-Real 전이 성능 개선을 정량 확인</li>
+    </ul>
+  </div>
+
+  <h2><span class="no">DEMO</span>시연 영상</h2>
+  <div class="video-grid">
+    <div>
+      <div class="video-wrap vertical"><iframe src="https://www.youtube.com/embed/4yMeqzcyT-4" title="실제 Husky 로봇 복도 주행" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">실제 Husky A200 복도 자율주행</p>
+    </div>
+    <div>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/7N3GAzfNiMA" title="Curriculum Learning 학습 과정" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-caption">Curriculum Learning 학습 과정</p>
+    </div>
+  </div>
+  <figure style="max-width:420px;margin:18px auto 0">
+    <img src="../assets/img/sim2real/husky-hallway.jpg" alt="복도를 자율주행 중인 Husky A200 로봇" loading="lazy">
+    <figcaption>학습 정책으로 복도를 주행 중인 Husky A200.</figcaption>
+  </figure>
+
+  <nav class="detail-nav">
+    <a href="soar-rl.html"><small>← PREV</small><b>SOAR-RL: 협소 공간 강화학습 내비게이션</b></a>
+    <a class="next" href="isaacsim-ros.html"><small>NEXT →</small><b>Isaac Sim 자율주행 시뮬레이션 환경 구축</b></a>
+  </nav>
+</article>
+</body>
+</html>
