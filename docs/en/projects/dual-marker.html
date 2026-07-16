@@ -53,12 +53,11 @@
     <li>Fixed the repeated LPF initialization; re-tuned cutoff 100 Hz → 5 Hz via quantitative frequency sweeps</li>
     <li>Replaced Euler-angle filtering with a <b>SLERP-based LPF handling quaternion sign ambiguity</b></li>
     <li>Swapped quaternion median from geodesic medoid to <b>Weiszfeld's algorithm</b></li>
-    <li>Added a <b>One Euro Filter</b> that adapts strength to the rate of change</li>
-    <li>Modeled pitch variance vs. distance (LUT) as the basis for distance-adaptive filtering</li>
+    <li>Modeled pitch variance vs. distance (LUT) to quantify the noise characteristics and prototyped a distance-adaptive filter — comparative experiments showed a <b>One Euro Filter</b> (rate-adaptive filtering) performed better, so it was adopted</li>
   </ul>
   <figure>
-    <img src="../../assets/img/dual-marker/pitch-variance-lut.png" alt="Pitch variance LUT by distance z" loading="lazy">
-    <figcaption>Pitch-variance LUT by distance (z) — quantifying variance growth with range to ground the filter design.</figcaption>
+    <img src="../../assets/img/dual-marker/pitch-variance-lut.png" alt="Pitch variance analysis by distance z" loading="lazy">
+    <figcaption>Pitch-variance analysis by distance (z) — quantifying variance growth with range. This analysis motivated a distance-adaptive filter; after comparison, the One Euro Filter was adopted instead.</figcaption>
   </figure>
 
   <h3 style="margin:36px 0 12px;font-size:17px">Ceres-based pose estimation</h3>
