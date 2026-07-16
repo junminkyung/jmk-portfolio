@@ -16,18 +16,18 @@
 
 <article class="detail">
   <div class="detail-head">
-    <span class="badge industry">INDUSTRY · Owned module</span>
+    <span class="badge industry">INDUSTRY</span>
     <h1>Dual-Marker Relative Pose Estimation<br>System Overhaul</h1>
     <div class="meta">
       <span><b>Period</b> 2026.01 — 2026.06</span>
-      <span><b>Role</b> Took over at onboarding → now sole owner</span>
+      <span><b>Role</b> Pose-estimation and detection pipeline improvement · Field validation</span>
       <span><b>Keywords</b> C++ · Ceres Solver · Quaternion Filtering · Dynamic ROI</span>
     </div>
   </div>
 
   <p class="note">This is a project at my current employer. For confidentiality, product, customer, and site details are
   omitted; the write-up focuses on the problem-solving process and engineering decisions.
-  I took this module over right after joining, own it today, and <b>my code runs on robots in production.</b></p>
+  <b>The improved code runs on robots in production.</b></p>
 
   <div class="tldr">
     <b>TL;DR</b>
@@ -53,12 +53,8 @@
     <li>Fixed the repeated LPF initialization; re-tuned cutoff 100 Hz → 5 Hz via quantitative frequency sweeps</li>
     <li>Replaced Euler-angle filtering with a <b>SLERP-based LPF handling quaternion sign ambiguity</b></li>
     <li>Swapped quaternion median from geodesic medoid to <b>Weiszfeld's algorithm</b></li>
-    <li>Modeled pitch variance vs. distance (LUT) to quantify the noise characteristics and prototyped a distance-adaptive filter — comparative experiments showed a <b>One Euro Filter</b> (rate-adaptive filtering) performed better, so it was adopted</li>
+    <li>Prototyped a LUT-based distance-adaptive filter from pitch variance versus distance, but did not integrate it into the production code. Comparative experiments favored a <b>One Euro Filter</b> (rate-adaptive filtering), which was adopted instead.</li>
   </ul>
-  <figure>
-    <img src="../../assets/img/dual-marker/pitch-variance-lut.png" alt="Pitch variance analysis by distance z" loading="lazy">
-    <figcaption>Pitch-variance analysis by distance (z) — quantifying variance growth with range. This analysis motivated a distance-adaptive filter; after comparison, the One Euro Filter was adopted instead.</figcaption>
-  </figure>
 
   <h3 style="margin:36px 0 12px;font-size:17px">Ceres-based pose estimation</h3>
   <p>Instead of stock OpenCV solvePnP, I re-implemented pose estimation to <b>minimize reprojection error directly with
@@ -109,9 +105,9 @@
   </div>
 
   <div class="result-band">
-    <b>OWNERSHIP</b>
+    <b>IMPACT</b>
     <ul>
-      <li>Took over the code at onboarding and drove everything from defect analysis to redesign and field validation — now the module's sole owner</li>
+      <li>Worked across filter-defect analysis, pose-estimation redesign, detection and compute optimization, and field validation</li>
       <li>The improved code shipped through release and runs on robots operating in production today</li>
     </ul>
   </div>
